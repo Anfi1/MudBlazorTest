@@ -1,0 +1,17 @@
+@page "/client/{client}"
+
+@using Microsoft.EntityFrameworkCore
+@inject IDialogService DialogService
+@inject ApplicationContext db;
+ 
+<h1>Blazor is @client!</h1>
+
+@code {
+    [Parameter]
+    public string? client { get; set; }
+
+    protected override void OnInitialized()
+    {
+        client = client ?? "fantastic";
+    }
+}

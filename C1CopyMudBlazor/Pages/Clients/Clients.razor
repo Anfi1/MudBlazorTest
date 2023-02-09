@@ -1,0 +1,96 @@
+@page "/client"
+@using Microsoft.EntityFrameworkCore
+@inject IDialogService DialogService
+@inject ApplicationContext db;
+ 
+<MudPaper Height="120%" Width="100%" Class="pt-4 mt-n4">
+    <MudContainer Fixed="true" >
+        <MudButton OnClick="@AddItem" Color="@Color.Success" Class="add-item-btn">Добавить Клиента</MudButton>
+        
+        <MudDataGrid T="Client" Items="@clients" ReadOnly="@_readOnly" EditMode="@(_isCellEditMode ? DataGridEditMode.Cell : DataGridEditMode.Form)"
+                     StartedEditingItem="@StartedEditingItem" CanceledEditingItem="@CanceledEditingItem" CommittedItemChanges="@CommittedItemChanges"
+                     Bordered="true" Dense="true" EditTrigger="@(_editTriggerRowClick ? DataGridEditTrigger.OnRowClick : DataGridEditTrigger.Manual)">
+            <ToolBarContent>
+                    <MudText Typo="Typo.h6">Periodic Elements</MudText>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                        AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                </ToolBarContent>
+            <Columns>
+                <Column T="Client" Field="ID" Title="Nr" IsEditable="false"/>
+                <Column T="Client" Field="Name"/>
+                <Column T="Client" Hidden="@(_isCellEditMode || _readOnly || _editTriggerRowClick)" CellClass="d-flex justify-end">
+                    <CellTemplate>
+                        <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@context.Actions.StartEditingItem"/>
+                    </CellTemplate>
+                </Column>
+            </Columns>
+            <PagerContent>
+                    <MudDataGridPager T="Client" PageSizeOptions=@(new int[] {5, 10, 20}) />
+                </PagerContent>
+        </MudDataGrid>
+        
+        <div class="d-flex flex-wrap mt-4">
+            <MudSwitch @bind-Checked="@_readOnly" Color="Color.Primary">Read Only</MudSwitch>
+            <div class="d-flex justify-start align-center">
+                <p class="mud-typography mud-typography-body1 mud-inherit-text mr-2">Form</p>
+                <MudSwitch @bind-Checked="@_isCellEditMode">Cell</MudSwitch>
+            </div>
+            <div class="d-flex justify-start align-center">
+                <p class="mud-typography mud-typography-body1 mud-inherit-text mr-2">Manual</p>
+                <MudSwitch @bind-Checked="@_editTriggerRowClick">On Row Click</MudSwitch>
+            </div>
+        </div>
+    </MudContainer>
+</MudPaper>
+
+@code {
+    List<Client> clients = new List<Client>();
+    private string _searchString ="";
+    private bool _readOnly;
+    private bool _isCellEditMode;
+    private List<string> _events = new();
+    private bool _editTriggerRowClick;
+    private NavigationManager navman;
+
+    async Task AddItem()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Введите имя клиента для того чтобы его добавить");
+        parameters.Add("ButtonText", "Добавить");
+        parameters.Add("Color", Color.Success);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+        var dialog = DialogService.Show<AddClientDialog>("Добавить Клиента", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            var client = result.Data as Client;
+            clients.Add(client);
+            db.Clients.Add(client);
+            db.SaveChangesAsync();
+        }
+    }
+    
+    protected  override async Task OnInitializedAsync()
+    {
+        clients = await db.Clients.ToListAsync();
+    }
+    
+    // events
+    void StartedEditingItem(Client item)
+    {
+
+    }
+
+    void CanceledEditingItem(Client item)
+    {
+
+    }
+
+    void CommittedItemChanges(Client item)
+    {
+        db.Clients.Update(item);
+        db.SaveChangesAsync();
+    }
+}
