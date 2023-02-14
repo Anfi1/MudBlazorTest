@@ -24,7 +24,6 @@ builder.Services.AddControllersWithViews().AddJsonOptions(o =>
     o.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
 });
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

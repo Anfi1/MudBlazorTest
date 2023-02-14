@@ -110,7 +110,6 @@ public class Worker: Human
     
     public WorkPlace? WorkPlace { get; set; }
     public Office? Office { get; set; }
-    public ICollection<Tech> teches { get; set; }
 }
 
 public class WorkPlace

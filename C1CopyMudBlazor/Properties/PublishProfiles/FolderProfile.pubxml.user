@@ -3,4 +3,15 @@
 https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>D:\C# Projects\Sites\C1COPYBLAZOR</_PublishTargetUrl>
+    <History>True|2023-02-13T14:50:38.9744927Z;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="DefaultConnection">
+      <Value>server=localhost%3buser=root%3bpassword=root%3bdatabase=roflik%3b</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
 </Project>

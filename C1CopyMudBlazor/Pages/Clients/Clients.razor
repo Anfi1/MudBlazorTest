@@ -1,8 +1,7 @@
 @page "/client"
 @using Microsoft.EntityFrameworkCore
 @inject IDialogService DialogService
-@inject ApplicationContext db;
- 
+
 <MudPaper Height="120%" Width="100%" Class="pt-4 mt-n4">
     <MudContainer Fixed="true" >
         <MudButton OnClick="@AddItem" Color="@Color.Success" Class="add-item-btn">Добавить Клиента</MudButton>
@@ -67,14 +66,20 @@
         {
             var client = result.Data as Client;
             clients.Add(client);
-            db.Clients.Add(client);
-            db.SaveChangesAsync();
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                db.Clients.Add(client);
+                db.SaveChangesAsync();
+            }
         }
     }
     
     protected  override async Task OnInitializedAsync()
     {
-        clients = await db.Clients.ToListAsync();
+        using (ApplicationContext db = new ApplicationContext())
+        {
+            clients = await db.Clients.ToListAsync();
+        }
     }
     
     // events
@@ -90,7 +95,10 @@
 
     void CommittedItemChanges(Client item)
     {
-        db.Clients.Update(item);
-        db.SaveChangesAsync();
+        using (ApplicationContext db = new ApplicationContext())
+        {
+            db.Clients.Update(item);
+            db.SaveChangesAsync();
+        }
     }
 }

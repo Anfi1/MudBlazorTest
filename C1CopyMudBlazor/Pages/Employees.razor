@@ -1,91 +1,90 @@
 @page "/Employees"
 @using Microsoft.EntityFrameworkCore
-@using MySqlConnector
 @inject IDialogService DialogService
-@inject ApplicationContext db;
-<MudDataGrid 
-    T="Worker" Items="@employees" ReadOnly="@_readOnly" EditMode="@DataGridEditMode.Cell"
-             CommittedItemChanges="@CommittedItemChanges" Hover="true"
-             Bordered="true" Dense="true" EditTrigger="@DataGridEditTrigger.Manual">
-    <ToolBarContent>
-        <MudText Typo="Typo.h6">Все сотрудники</MudText>
-        <MudSpacer/>
-        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
-        </MudTextField>
-    </ToolBarContent>
-    <Columns>
-        <Column T="Worker" Field="ID" Title="Nr" IsEditable="false"/>
-        <Column T="Worker" Field="FIO"/>
-        <Column T="Worker" Field="WorkPlaceID">
-            <EditTemplate>
-                <MudSelect @bind-Value="context.Item.WorkPlaceID" Required RequiredError="You must select a WorkPlace!!!" Margin="@Margin.Dense">
-                    @foreach (var workplace in workplaces)
-                    {
-                        @if (workplace.OfficeID == context.Item.OfficeID)
+
+    <MudDataGrid 
+        T="Worker" Items="@employees" ReadOnly="@_readOnly" EditMode="@DataGridEditMode.Cell"
+                 CommittedItemChanges="@CommittedItemChanges" Hover="true"
+                 Bordered="true" Dense="true" EditTrigger="@DataGridEditTrigger.Manual">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Все сотрудники</MudText>
+            <MudSpacer/>
+            <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
+            </MudTextField>
+        </ToolBarContent>
+        <Columns>
+            <Column T="Worker" Field="ID" Title="Nr" IsEditable="false"/>
+            <Column T="Worker" Field="FIO"/>
+            <Column T="Worker" Field="WorkPlaceID">
+                <EditTemplate>
+                    <MudSelect @bind-Value="context.Item.WorkPlaceID" Required RequiredError="You must select a WorkPlace!!!" Margin="@Margin.Dense">
+                        @foreach (var workplace in workplaces.Where(workplace => workplace.OfficeID == context.Item.OfficeID))
                         {
                             <MudSelectItem Value="@workplace.ID">@workplace.WorkplaceNumber</MudSelectItem>
                         }
-                    }
-                </MudSelect>
-            </EditTemplate>
-        </Column>
-        <Column T="Worker" Field="OfficeID">
-            <EditTemplate>
-                <MudSelect @bind-Value="context.Item.OfficeID" Required RequiredError="You must select a Office!!!" Margin="@Margin.Dense">
-                    @foreach (var office in offices)
-                    {
-                        <MudSelectItem Value="@office.ID">@office.OfficeName</MudSelectItem>
-                    }
-                </MudSelect>
-            </EditTemplate>
-        </Column>
-        <Column T="Worker" Field="Position"/>
-        <Column T="Worker" Field="Email"/>
-        <Column T="Worker" Field="EmailPass"/>
-        <Column T="Worker" Field="OwnPhoneNumber"/>
-        <Column T="Worker" Field="ServerIP"/>
-        <Column T="Worker" Field="AnyDesk"/>
-        <Column T="Worker" Field="AnyDeskPass"/>
-        <Column T="Worker" Field="UserAD"/>
-        <Column T="Worker" Field="PassAD"/>
-        <Column T="Worker" Field="FIOEng"/>
-        <Column T="Worker" Field="PhoneLog"/>
-        <Column T="Worker" Field="PhonePass"/>
-        <Column T="Worker" Field="PhoneOutsideNumber"/>
-        <Column T="Worker" Hidden="true" CellClass="d-flex justify-end">
-            <CellTemplate>
-                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@context.Actions.StartEditingItem"/>
-            </CellTemplate>
-        </Column>
-    </Columns>
-    <LoadingContent>
-            <MudText>Loading...</MudText>
-        </LoadingContent>
-    <PagerContent>
-        <MudDataGridPager T="Worker" InfoFormat=""/>
-    </PagerContent>
-</MudDataGrid>
+                    </MudSelect>
+                </EditTemplate>
+            </Column>
+            <Column T="Worker" Field="OfficeID">
+                <EditTemplate>
+                    <MudSelect @bind-Value="context.Item.OfficeID" Margin="@Margin.Dense">
+                        @foreach (var office in offices)
+                        {
+                            <MudSelectItem Value="@office.ID">@office.OfficeName</MudSelectItem>
+                        }
+                    </MudSelect>
+                </EditTemplate>
+            </Column>
+            <Column T="Worker" Field="Position"/>
+            <Column T="Worker" Field="Email"/>
+            <Column T="Worker" Field="EmailPass"/>
+            <Column T="Worker" Field="OwnPhoneNumber"/>
+            <Column T="Worker" Field="ServerIP"/>
+            <Column T="Worker" Field="AnyDesk"/>
+            <Column T="Worker" Field="AnyDeskPass"/>
+            <Column T="Worker" Field="UserAD"/>
+            <Column T="Worker" Field="PassAD"/>
+            <Column T="Worker" Field="FIOEng"/>
+            <Column T="Worker" Field="PhoneLog"/>
+            <Column T="Worker" Field="PhonePass"/>
+            <Column T="Worker" Field="PhoneOutsideNumber"/>
+            <Column T="Worker" Hidden="true" CellClass="d-flex justify-end">
+                <CellTemplate>
+                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@context.Actions.StartEditingItem"/>
+                </CellTemplate>
+            </Column>
+        </Columns>
+        <LoadingContent>
+                <MudText>Loading...</MudText>
+            </LoadingContent>
+        <PagerContent>
+            <MudDataGridPager T="Worker" InfoFormat=""/>
+        </PagerContent>
+    </MudDataGrid>
+
+
 
 
 @code {
-    ICollection<Worker> employees;
-    ICollection<Office> offices;
-    ICollection<Client> clients;
-    ICollection<WorkPlace> workplaces;
+    List<Worker> employees;
+    List<Office> offices;
+    List<Client> clients;
+    List<WorkPlace> workplaces;
     private bool _readOnly;
     private bool _isCellEditMode;
-    private List<string> _events = new();
     private bool _editTriggerRowClick;
     private string _searchString;
     private bool _sortNameByLength;
 
     protected override async Task OnInitializedAsync()
     {
-        employees = await db.Workers.ToListAsync();
-        offices = await db.Offices.ToListAsync();
-        clients = await db.Clients.ToListAsync();
-        workplaces = await db.WorkPlaces.ToListAsync();
+        await using (ApplicationContext db = new ApplicationContext())
+        {
+            employees = await db.Workers.Include(o=>o.Office).ToListAsync();
+            offices = await db.Offices.ToListAsync();
+            workplaces = await db.WorkPlaces.ToListAsync();
+        }
         await EmployeesInitial(employees);
     }
 
@@ -93,7 +92,7 @@
     {
         foreach (var employee in employees)
         {
-            employee.Office = offices.FirstOrDefault(c => c.ID == employee.OfficeID);
+
             employee.WorkPlace = workplaces.FirstOrDefault(c => c.ID == employee.WorkPlaceID);
         }
     }
@@ -101,8 +100,12 @@
 
     void CommittedItemChanges(Worker item)
     {
-        db.Workers.Update(item);
-        db.SaveChangesAsync();
+        using (ApplicationContext db = new ApplicationContext())
+        {
+            db.Workers.Update(item);
+            db.SaveChangesAsync();
+        }
     }
+    
 
 }

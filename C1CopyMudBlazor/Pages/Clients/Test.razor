@@ -1,7 +1,6 @@
 @page "/Test"
 @using Microsoft.EntityFrameworkCore
 @inject IDialogService DialogService
-@inject ApplicationContext db;
 @inject HttpClient httpClient
 @inject ISnackbar Snackbar
 
@@ -105,7 +104,20 @@
 
     protected override async Task OnInitializedAsync()
     {
-        clients = await db.Clients.ToListAsync();
+        using (ApplicationContext db =new ApplicationContext())
+        {
+            clients = await db.Clients.ToListAsync();
+        }
+    }
+    void HandleClick(MouseEventArgs args)
+    {
+        Console.WriteLine("This is a left click");
+    }
+
+    void HandleMouseUp(MouseEventArgs args)
+    {
+        if (args.Button == 2)
+            Console.WriteLine("This is a right click");
     }
 
     private void ClearEventLog()
@@ -128,8 +140,13 @@
             };
     }
 
-    private void ItemHasBeenCommitted(object element)
+    private void ItemHasBeenCommitted(object o)
     {
+        using (ApplicationContext db = new ApplicationContext())
+        {
+            db.Update(o as Client);
+            db.SaveChangesAsync();
+        }
     }
 
     private void ResetItemToOriginalValues(object element)
@@ -161,8 +178,11 @@
         {
             var client = result.Data as Client;
             clients.Append(client);
-            db.Clients.Add(client);
-            db.SaveChangesAsync();
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                db.Clients.Add(client);
+                db.SaveChangesAsync();
+            }
         }
     }
 }
