@@ -1,10 +1,15 @@
 @page "/Test"
 @using Microsoft.EntityFrameworkCore
 @inject IDialogService DialogService
-@inject HttpClient httpClient
 @inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
 
 <MudButton OnClick="@AddItem" Color="@Color.Success" Class="add-item-btn">Добавить Клиента</MudButton>
+@if (selectedItem1 != null)
+{
+    <MudButton OnClick="@RedirectToClient" Color="@Color.Success" Class="add-item-btn">Открыть @selectedItem1.Name</MudButton>
+    <MudButton OnClick="@RemoveItem" Color="@Color.Error" Class="add-item-btn">Удалить @selectedItem1.Name</MudButton>
+}
 
 <MudTable Items="@clients" Dense="@dense" Hover="@hover" ReadOnly="@ronly" CanCancelEdit="@canCancelEdit" Filter="new Func<Client,bool>(FilterFunc)"
           @bind-SelectedItem="selectedItem1" SortLabel="Sort By" CommitEditTooltip="Commit Edit"
@@ -100,7 +105,7 @@
     private TableApplyButtonPosition applyButtonPosition = TableApplyButtonPosition.End;
     private TableEditButtonPosition editButtonPosition = TableEditButtonPosition.End;
     private TableEditTrigger editTrigger = TableEditTrigger.RowClick;
-    private IEnumerable<Client> clients = new List<Client>();
+    private List<Client> clients = new List<Client>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -147,6 +152,7 @@
             db.Update(o as Client);
             db.SaveChangesAsync();
         }
+        selectedItem1 = null;
     }
 
     private void ResetItemToOriginalValues(object element)
@@ -171,18 +177,43 @@
         parameters.Add("ButtonText", "Добавить");
         parameters.Add("Color", Color.Success);
 
-        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+        var options = new DialogOptions() { CloseButton = false, MaxWidth = MaxWidth.ExtraSmall };
         var dialog = DialogService.Show<AddClientDialog>("Добавить Клиента", parameters, options);
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
             var client = result.Data as Client;
-            clients.Append(client);
+            clients.Add(client);
             using (ApplicationContext db = new ApplicationContext())
             {
                 db.Clients.Add(client);
+                await db.SaveChangesAsync();
+            }
+        }
+    }
+    async Task RemoveItem()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Введите имя клиента для того чтобы его добавить");
+        parameters.Add("ButtonText", "Удалить");
+        parameters.Add("Color", Color.Error);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+        var dialog = DialogService.Show<RemoveClientDialog>("Удалить Клиента?", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            clients.Remove(selectedItem1);
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                db.Clients.Remove(selectedItem1);
                 db.SaveChangesAsync();
             }
         }
+    }
+
+    private void RedirectToClient()
+    {
+        NavigationManager.NavigateTo($"/clients/{selectedItem1}");
     }
 }

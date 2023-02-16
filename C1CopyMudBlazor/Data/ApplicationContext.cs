@@ -6,7 +6,6 @@ namespace C1CopyMudBlazor.Data;
 public class ApplicationContext : DbContext
 {
     private readonly IConfiguration configuration;
-    public DbSet<User> Users { get; set; } = null!;
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<Client> Clients { get; set; }
@@ -28,11 +27,6 @@ public class ApplicationContext : DbContext
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>().HasData(
-            new User { Id = 1, Name = "Tom", Age = 37, PhoneNumber = "323232"},
-            new User { Id = 2, Name = "Bob", Age = 41, PhoneNumber = "323232" },
-            new User { Id = 3, Name = "Sam", Age = 24, PhoneNumber = "323232" }
-        );
         var ad = new Role{RoleID= 1,Name = "admin"};
         var us = new Role{RoleID=2,Name = "user"};
         modelBuilder.Entity<Role>().HasData(
@@ -73,11 +67,11 @@ public class ApplicationContext : DbContext
         modelBuilder.Entity<Worker>()
             .HasData(
                 new Worker {ID = 1,OfficeID=1,WorkPlaceID=1,FIO="Харсанов Фарид",Position = "Бух",Email = "f.kharsanov@machinerylogistics.kz",EmailPass = "KhFa9312!",OwnPhoneNumber = "+7758392415", ServerIP = "172.15.0.31",
-                    AnyDesk = 611110401,AnyDeskPass = "1410001m!",UserAD = "f.kharsanov@pro-jecta.loc",PassAD="KhFa9312!",
+                    AnyDesk = "611110401",AnyDeskPass = "1410001m!",UserAD = "f.kharsanov@pro-jecta.loc",PassAD="KhFa9312!",
                     FIOEng= "Kharsanov Farid", PhoneLog="2038",PhonePass = "229f6eb1b905f6f4492cfec4b2eb542b",
                     PhoneOutsideNumber = "77273102020"},
                 new Worker {ID = 2,OfficeID=2,WorkPlaceID=3,FIO="Поздняк Евгений",Position = "Директор",Email = "e.pozner999@machinerylogistics.kz",EmailPass = "KhFa9312!",OwnPhoneNumber = "+7758392415", ServerIP = "172.15.0.31",
-                    AnyDesk = 611110401,AnyDeskPass = "1410001m!",UserAD = "f.kharsanov@pro-jecta.loc",PassAD="KhFa9312!",
+                    AnyDesk = "611110401",AnyDeskPass = "1410001m!",UserAD = "f.kharsanov@pro-jecta.loc",PassAD="KhFa9312!",
                     FIOEng= "Kharsanov Farid", PhoneLog="2038",PhonePass = "229f6eb1b905f6f4492cfec4b2eb542b",
                     PhoneOutsideNumber = "77273102020"}
                 );

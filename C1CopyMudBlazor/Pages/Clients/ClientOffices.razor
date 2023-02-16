@@ -1,4 +1,3 @@
-@page "/Offices"
 @using C1CopyMudBlazor.Data.Interfaces
 @using C1CopyMudBlazor.Pages.Clients
 @inject IDialogService DialogService
@@ -12,14 +11,14 @@
         </CardHeaderContent>
     </MudCardHeader>
     <MudCardContent>
-        <MudTextField @bind-Value="office.OfficeName" Label="Название Офиса" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
-        <MudTextField @bind-Value="office.Adress" Label="Адрес" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+        <MudTextField @bind-Value="office.OfficeName" Label="Название Офиса" Variant="Variant.Text" Margin="Margin.Normal"/>
+        <MudTextField @bind-Value="office.Adress" Label="Адрес" Variant="Variant.Text" Margin="Margin.Normal"/>
         <br/>
         <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Save">Сохранить Офис</MudButton>
     </MudCardContent>
 </MudCard>
 <br/>
-<MudTable Elevation="25" Items="getOffices()" Filter="new Func<Office, bool>(Search)" @bind-customer="office">
+<MudTable Elevation="25" Items="getOffices()" Filter="new Func<Office, bool>(SearchOffice)" @bind-customer="office">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Офисы</MudText>
         <MudSpacer/>
@@ -56,7 +55,7 @@
         return offices;
     }
 
-    private bool Search(Office office)
+    private bool SearchOffice(Office office)
     {
         if (string.IsNullOrWhiteSpace(searchString)) return true;
         if (office.OfficeName.Contains(searchString, StringComparison.OrdinalIgnoreCase)

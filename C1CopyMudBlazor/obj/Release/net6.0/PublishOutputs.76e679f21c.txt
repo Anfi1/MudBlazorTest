@@ -30,7 +30,4 @@ D:\C# Projects\Sites\C1CopyMudBlazor\MySqlConnector.dll
 D:\C# Projects\Sites\C1CopyMudBlazor\Newtonsoft.Json.dll
 D:\C# Projects\Sites\C1CopyMudBlazor\Newtonsoft.Json.Bson.dll
 D:\C# Projects\Sites\C1CopyMudBlazor\Pomelo.EntityFrameworkCore.MySql.dll
-D:\C# Projects\Sites\C1CopyMudBlazor\RedisRepo.Src.dll
-D:\C# Projects\Sites\C1CopyMudBlazor\RedisRepo.HttpRuntimeCache.dll
-D:\C# Projects\Sites\C1CopyMudBlazor\StackExchange.Redis.dll
 D:\C# Projects\Sites\C1CopyMudBlazor\System.IO.Pipelines.dll

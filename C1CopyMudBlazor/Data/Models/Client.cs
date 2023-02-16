@@ -45,9 +45,9 @@ public class Office
     public int? ClientID { get; set; }
     public string OfficeName { get; set; }
     public string Adress { get; set; }
-    public string City { get; set; }
-    public int Floor { get; set; }
-    public uint Cabinet { get; set; }
+    public string? City { get; set; }
+    public int? Floor { get; set; }
+    public uint? Cabinet { get; set; }
     
     
     public Client Client { get; set; }
@@ -82,9 +82,9 @@ public class Tech
 public class Human
 {
     public int ID { get; set; }
-    public string FIO { get; set; }
+    public string? FIO { get; set; }
     public string? Position { get; set; }
-    public string Email { get; set; }
+    public string? Email { get; set; }
     public string? EmailPass { get; set; }
     public string? OwnPhoneNumber { get; set; }
 }
@@ -97,16 +97,16 @@ public class Worker: Human
 
     public string? ServerIP { get; set; }
     //AnyDesk
-    public int AnyDesk { get; set; }
+    public string? AnyDesk { get; set; }
     public string? AnyDeskPass { get; set; }
     //AD
-    public string UserAD { get; set; }
-    public string PassAD { get; set; }
+    public string? UserAD { get; set; }
+    public string? PassAD { get; set; }
     //Phone
-    public string FIOEng { get; set; }
-    public string PhoneLog { get; set; }
-    public string PhonePass { get; set; }
-    public string PhoneOutsideNumber { get; set; }
+    public string? FIOEng { get; set; }
+    public string? PhoneLog { get; set; }
+    public string? PhonePass { get; set; }
+    public string? PhoneOutsideNumber { get; set; }
     
     public WorkPlace? WorkPlace { get; set; }
     public Office? Office { get; set; }

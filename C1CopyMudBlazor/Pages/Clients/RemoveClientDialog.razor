@@ -1,9 +1,5 @@
 <MudDialog>
-    <DialogContent>
-        <MudTextField @bind-Value="@OfficeName" Label="Название офиса"></MudTextField>
-
-        <MudTextField @bind-Value="@Adress" Label="Адрес офиса"></MudTextField>
-    </DialogContent>
+    <DialogContent><MudText ReadOnly="true" Value="@ContentText"/>@ClientName</DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
         <MudButton Color="@Color" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton>
@@ -12,12 +8,9 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    public Office office { get; set; } = new Office();
-    
     [Parameter] public string ContentText { get; set; }
     
-    public string OfficeName { get; set; }
-    public string Adress { get; set; }
+    [Parameter] public string ClientName { get; set; }
 
     [Parameter] public string ButtonText { get; set; }
 
@@ -25,9 +18,8 @@
 
     void Submit()
     {
-        office.OfficeName = OfficeName;
-        office.Adress = Adress;
-        MudDialog.Close(DialogResult.Ok(office));
+
+        MudDialog.Close(DialogResult.Ok(""));
     } 
     void Cancel() => MudDialog.Cancel();
 }

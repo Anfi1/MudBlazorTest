@@ -18,11 +18,3 @@ public class Role
     public List<Account> Accounts { get; set; }
         
 }
-public class User
-{
-    public int Id { get; set; }
-    [Required(ErrorMessage ="Слишком больше имя")]
-    public string Name { get; set; } = ""; // имя пользователя
-    public int Age { get; set; }
-    public string PhoneNumber { get; set; }
-}

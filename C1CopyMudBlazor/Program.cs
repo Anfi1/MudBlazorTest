@@ -1,7 +1,10 @@
 
 using System.Text.Json.Serialization;
 using C1CopyMudBlazor.Data;
+using C1CopyMudBlazor.Data.Interfaces;
+using C1CopyMudBlazor.Data.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using MudBlazor.Services;
@@ -18,11 +21,20 @@ builder.Services.AddDbContext<ApplicationContext>();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddMudServices();
-builder.Services.AddControllersWithViews().AddJsonOptions(o =>
+builder.Services.AddScoped<IOfficeService, OfficeService>();
+builder.Services.AddScoped<IWorkerService, WorkerService>();
+builder.Services.ConfigureApplicationCookie(options =>
 {
-    o.JsonSerializerOptions.PropertyNamingPolicy = null;
-    o.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    options.Cookie.HttpOnly = false;
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode = 401;
+        return Task.CompletedTask;
+    };
 });
+builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient("LocalApi", client => client.BaseAddress = new Uri("https://localhost:44333/"));
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
@@ -39,8 +51,15 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseEndpoints(endpoints =>
+{
+    // This is the line you need to add
+    endpoints.MapControllers();
 
-app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
+    endpoints.MapBlazorHub();
+    endpoints.MapFallbackToPage("/_Host");
+});
 
 app.Run();

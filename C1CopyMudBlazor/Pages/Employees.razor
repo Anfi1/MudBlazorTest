@@ -1,111 +1,124 @@
 @page "/Employees"
-@using Microsoft.EntityFrameworkCore
+@using C1CopyMudBlazor.Data.Interfaces
+@using C1CopyMudBlazor.Pages.Clients
 @inject IDialogService DialogService
+@inject IWorkerService workerService
+@inject IOfficeService officeService
+@inject ISnackbar Snackbar
 
-    <MudDataGrid 
-        T="Worker" Items="@employees" ReadOnly="@_readOnly" EditMode="@DataGridEditMode.Cell"
-                 CommittedItemChanges="@CommittedItemChanges" Hover="true"
-                 Bordered="true" Dense="true" EditTrigger="@DataGridEditTrigger.Manual">
-        <ToolBarContent>
-            <MudText Typo="Typo.h6">Все сотрудники</MudText>
-            <MudSpacer/>
-            <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
-                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
-            </MudTextField>
-        </ToolBarContent>
-        <Columns>
-            <Column T="Worker" Field="ID" Title="Nr" IsEditable="false"/>
-            <Column T="Worker" Field="FIO"/>
-            <Column T="Worker" Field="WorkPlaceID">
-                <EditTemplate>
-                    <MudSelect @bind-Value="context.Item.WorkPlaceID" Required RequiredError="You must select a WorkPlace!!!" Margin="@Margin.Dense">
-                        @foreach (var workplace in workplaces.Where(workplace => workplace.OfficeID == context.Item.OfficeID))
-                        {
-                            <MudSelectItem Value="@workplace.ID">@workplace.WorkplaceNumber</MudSelectItem>
-                        }
-                    </MudSelect>
-                </EditTemplate>
-            </Column>
-            <Column T="Worker" Field="OfficeID">
-                <EditTemplate>
-                    <MudSelect @bind-Value="context.Item.OfficeID" Margin="@Margin.Dense">
-                        @foreach (var office in offices)
-                        {
-                            <MudSelectItem Value="@office.ID">@office.OfficeName</MudSelectItem>
-                        }
-                    </MudSelect>
-                </EditTemplate>
-            </Column>
-            <Column T="Worker" Field="Position"/>
-            <Column T="Worker" Field="Email"/>
-            <Column T="Worker" Field="EmailPass"/>
-            <Column T="Worker" Field="OwnPhoneNumber"/>
-            <Column T="Worker" Field="ServerIP"/>
-            <Column T="Worker" Field="AnyDesk"/>
-            <Column T="Worker" Field="AnyDeskPass"/>
-            <Column T="Worker" Field="UserAD"/>
-            <Column T="Worker" Field="PassAD"/>
-            <Column T="Worker" Field="FIOEng"/>
-            <Column T="Worker" Field="PhoneLog"/>
-            <Column T="Worker" Field="PhonePass"/>
-            <Column T="Worker" Field="PhoneOutsideNumber"/>
-            <Column T="Worker" Hidden="true" CellClass="d-flex justify-end">
-                <CellTemplate>
-                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@context.Actions.StartEditingItem"/>
-                </CellTemplate>
-            </Column>
-        </Columns>
-        <LoadingContent>
-                <MudText>Loading...</MudText>
-            </LoadingContent>
-        <PagerContent>
-            <MudDataGridPager T="Worker" InfoFormat=""/>
-        </PagerContent>
-    </MudDataGrid>
+<MudCard Elevation="25">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Добавить / Изменить сотрудника</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudTextField @bind-Value="worker.FIO" Label="ФИО" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+        <MudSelect @bind-Value="worker.OfficeID" Label="Офис" Variant="Variant.Text" Margin="Margin.Normal">
+            @foreach (var item in officeService.GetOffices())
+            {
+                <MudSelectItem Value="@item.ID">@item.OfficeName</MudSelectItem>
+            }
+            
+        </MudSelect>
+        <MudTextField @bind-Value="worker.WorkPlaceID" Label="Номер рабочего места" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+        <br/>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Save">Сохранить изменения</MudButton>
+    </MudCardContent>
+</MudCard>
+<br/>
+<MudTable Elevation="25" Items="getWorkers()" Filter="new Func<Worker, bool>(Search)" @bind-customer="worker">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Сотрудники</MudText>
+        <MudSpacer/>
+        <MudTextField @bind-Value="searchString" Placeholder="Поиск по таблице..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Действия</MudTh>
+        <MudTh>Клиент</MudTh>
+        <MudTh>Фио</MudTh>
+        <MudTh>№ места</MudTh>
+        <MudTh>Офис</MudTh>
+        <MudTh>AnyDesk</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="" Style="width: 40px">
+            <MudFab @onclick="@(() => Edit(@context.ID))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small"/>
+            <MudFab @onclick="@(() => Delete(@context.ID))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small"/>
+        </MudTd>
+        <MudTd DataLabel="FIO">@context.Office.Client.Name</MudTd>
+        <MudTd DataLabel="FIO">@context.FIO</MudTd>
+        <MudTd DataLabel="WorkPlace">@context.WorkPlaceID</MudTd>
+        <MudTd DataLabel="WorkPlace">@context.Office.OfficeName</MudTd>
 
 
+        <MudTd DataLabel="WorkPlace">
+            <MudLink Href=@($"anydesk:{context.AnyDesk}")>@context.AnyDesk</MudLink>
+        </MudTd>
+
+    </RowTemplate>
+</MudTable>
 
 
 @code {
-    List<Worker> employees;
-    List<Office> offices;
-    List<Client> clients;
-    List<WorkPlace> workplaces;
-    private bool _readOnly;
-    private bool _isCellEditMode;
-    private bool _editTriggerRowClick;
-    private string _searchString;
-    private bool _sortNameByLength;
+    public string name = "";
+    private string searchString = "";
+    private Worker worker = new Worker();
+    private List<Worker> workers = new List<Worker>();
 
     protected override async Task OnInitializedAsync()
     {
-        await using (ApplicationContext db = new ApplicationContext())
-        {
-            employees = await db.Workers.Include(o=>o.Office).ToListAsync();
-            offices = await db.Offices.ToListAsync();
-            workplaces = await db.WorkPlaces.ToListAsync();
-        }
-        await EmployeesInitial(employees);
+        getWorkers();
     }
 
-    private async Task EmployeesInitial(ICollection<Worker> employees)
+    private List<Worker> getWorkers()
     {
-        foreach (var employee in employees)
-        {
-
-            employee.WorkPlace = workplaces.FirstOrDefault(c => c.ID == employee.WorkPlaceID);
-        }
+        workers = workerService.GetWorkers();
+        return workers;
     }
-    
 
-    void CommittedItemChanges(Worker item)
+    private bool Search(Worker worker)
     {
-        using (ApplicationContext db = new ApplicationContext())
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        if (worker.FIO.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+
+            || worker.Office.Client.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+            || worker.Office.OfficeName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
         {
-            db.Workers.Update(item);
-            db.SaveChangesAsync();
+            return true;
+        }
+        return false;
+    }
+
+    private void Save()
+    {
+        workerService.SaveWorker(worker);
+        worker = new Worker();
+        Snackbar.Add("Customer Saved.", Severity.Success);
+        getWorkers();
+    }
+
+    private void Edit(int id)
+    {
+        worker = workers.FirstOrDefault(c => c.ID == id);
+    }
+
+    private async Task Delete(int id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ClientName", $"{worker.FIO}");
+        parameters.Add("ButtonText", "Удалить");
+        parameters.Add("Color", Color.Error);
+
+        var options = new DialogOptions() { CloseButton = false, MaxWidth = MaxWidth.Small };
+        var dialog = DialogService.Show<RemoveClientDialog>("Удалить сотрудника?", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            workerService.DeleteWorker(id);
+            Snackbar.Add("Сотрудник удален.", Severity.Success);
+            getWorkers();
         }
     }
-    
 
 }
