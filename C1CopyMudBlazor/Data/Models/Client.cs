@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using C1CopyMudBlazor.Data.Entities;
+using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 
 namespace C1CopyMudBlazor.Data.Entities;
@@ -25,12 +25,19 @@ public class Client
 public class LegalEntities
 {
     public int ID;
-    public int? ClientID { get; set; }
+    public int ClientID { get; set; }
+    public int? BuhID { get; set; }
+    public int? DirID { get; set; } 
     [MaxLength(80)]
     public string Name { get; set; }
+    [MaxLength(80)]
     public string Email { get; set; }
+    
+    public string? UNP { get; set; }
 
-    public ICollection<Worker>? Workers { get; set; }
+    public Worker? Dir { get; set; }
+    
+    public Worker? Buh { get; set; }
     public Client Client { get; set; }
 
     public override string ToString()
@@ -52,6 +59,7 @@ public class Office
     
     public Client Client { get; set; }
     public ICollection<Worker>? Workers { get; set; }
+    public ICollection<WorkPlace>? WorkPlaces { get; set; }
     public ICollection<Tech>? Teches { get; set; }
 
 
@@ -64,25 +72,31 @@ public class Tech
     public int? OfficeID { get; set; }
     public int? WorkerID { get; set; }
     public int? WorkPlaceID { get; set; }
+    public int? ClientID { get; set; }
 
+    [Required]
     public string Type { get; set; }
-    
+    [Required]
     public string InventaryID { get; set; }
-    
-    public string Manufacturer { get; set; }
-    
+    [Required]
     public string Model { get; set; }
+    [Required]
     public string IPAdress { get; set; }
     
+    public string? Login { get; set; }
+    public string? Pass { get; set; }
+
     public Office? Office { get; set; }
-    public WorkPlace WorkPlace { get; set; }
-    public Worker Worker { get; set; }
+    public WorkPlace? WorkPlace { get; set; }
+    public Worker? Worker { get; set; }
+    public Worker? Client { get; set; }
 }
 
 public class Human
 {
     public int ID { get; set; }
-    public string? FIO { get; set; }
+    [Required][MaxLength(80)]
+    public string FIO { get; set; }
     public string? Position { get; set; }
     public string? Email { get; set; }
     public string? EmailPass { get; set; }
@@ -91,9 +105,10 @@ public class Human
 
 public class Worker: Human
 {
-    public int OfficeID { get; set; }
-
-    public int WorkPlaceID { get; set; }
+    public int? OfficeID { get; set; }
+    public int? WorkPlaceID { get; set; }
+    [Required]
+    public int ClientID { get; set; }
 
     public string? ServerIP { get; set; }
     //AnyDesk
@@ -107,7 +122,7 @@ public class Worker: Human
     public string? PhoneLog { get; set; }
     public string? PhonePass { get; set; }
     public string? PhoneOutsideNumber { get; set; }
-    
+
     public WorkPlace? WorkPlace { get; set; }
     public Office? Office { get; set; }
 }
@@ -115,9 +130,8 @@ public class Worker: Human
 public class WorkPlace
 {
     public int ID { get; set; }
-    public int? OfficeID { get; set; }
-    public int WorkplaceNumber { get; set; }
-
+    public int OfficeID { get; set; }
+    public string WorkplaceNumber { get; set; }
     public Office Office { get; set; }
     public ICollection<Tech> teches { get; set; }
 }

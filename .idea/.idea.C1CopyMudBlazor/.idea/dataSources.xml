@@ -8,5 +8,22 @@
       <jdbc-url>jdbc:mysql://localhost:3306</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="Microsoft SQL Server LocalDB (JetBrains)" uuid="31889a5e-af52-4a07-8a04-7149860b177e">
+      <driver-ref>sqlserver.localdb.jb</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.jetbrains.jdbc.sqlserver.SqlServerDriver</jdbc-driver>
+      <jdbc-url>Server=(localdb)\MSSQLLocalDB</jdbc-url>
+      <jdbc-additional-properties>
+        <property name="LOCAL_DB_INSTANCE" value="MSSQLLocalDB" />
+      </jdbc-additional-properties>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="@10.1.0.24" uuid="c94a142d-8135-4975-b3cd-02077adf24b0">
+      <driver-ref>sqlserver.jb</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.jetbrains.jdbc.sqlserver.SqlServerDriver</jdbc-driver>
+      <jdbc-url>Server=10.1.0.24</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

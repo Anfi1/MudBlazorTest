@@ -1,0 +1,11 @@
+<MudImage ObjectFit="ObjectFit.Contain" Src="@($"Office/{officename}/{image}")"></MudImage>
+
+@code {
+
+    [Parameter]
+    public string image { get; set; }
+
+    [Parameter]
+    public string officename { get; set; }
+
+}

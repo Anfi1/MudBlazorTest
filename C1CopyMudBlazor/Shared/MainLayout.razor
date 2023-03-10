@@ -1,26 +1,38 @@
-﻿@using C1CopyMudBlazor.Data.Interfaces
+﻿@using C1CopyMudBlazor.Pages.Auth
 @inherits LayoutComponentBase
-@inject NavigationManager navigationManager
-@inject IAuthService AuthService
+@inject IDialogService DialogService
 
 <MudThemeProvider />
-<MudDialogProvider />
+<MudDialogProvider CloseOnEscapeKey="true"/>
 <MudSnackbarProvider />
 
     <MudLayout>
-        <MudAppBar Color="Color.Tertiary" Elevation="0">
+        <MudAppBar Color="Color.Tertiary" Elevation="0" Dense="true">
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
             <MudSpacer />
             <MudText>ITBoxTestApp</MudText>
             <MudSpacer />
-            <MudIconButton Icon="@Icons.Material.Filled.Login" Color="Color.Inherit" Edge="Edge.Start"  />
+            <AuthorizeView>
+                <Authorized>
+                    <a href="/login">Hello, @context.User.Identity.Name | @context.User.IsInRole("user") </a>
+                    <a href="/logout">Logout</a>
+                </Authorized>
+                <NotAuthorized>
+                    <a href="/register">Register</a>
+                    <a href="/login">Log in</a>
+                    <MudButton StartIcon="@Icons.Material.Filled.Login" OnClick="ShowiDalog"></MudButton>
+                    <MudButton StartIcon="@Icons.Material.Filled.AppRegistration" OnClick="ShowiDalog"></MudButton>
+                </NotAuthorized>
+            </AuthorizeView>
         </MudAppBar>
-        <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Breakpoint="Breakpoint.Lg" Elevation="1" Variant="@DrawerVariant.Mini">
+        <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Breakpoint="Breakpoint.Lg" Elevation="1" Variant="@DrawerVariant.Persistent">
             <NavMenu />
         </MudDrawer>
         <MudMainContent>
-            <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-0">
+            <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="my-8 pt-0 pr-1 mr-n1 ml-n2" Style="width: 100%; height: fit-content">
+                
                 @Body
+                
             </MudContainer>
         </MudMainContent>
     </MudLayout>
@@ -34,5 +46,11 @@
     {
         _drawerOpen = !_drawerOpen;
     }
-    
+
+    void ShowiDalog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<Login>("Вход", options);
+    }
+
 }

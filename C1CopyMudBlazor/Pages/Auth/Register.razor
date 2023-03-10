@@ -1,54 +1,47 @@
 @page "/register"
-@using Microsoft.AspNetCore.Components
-@using C1CopyMudBlazor.Data.Models
-@using C1CopyMudBlazor.Data.Interfaces
-@layout AuthLayout
-@inject NavigationManager navigationManager
-@inject IAuthService AuthService
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@inject ApplicationContext db
+@inject ISnackbar Snackbar 
+@inject NavigationManager nav
+@inject IHttpContextAccessor _accessor
 
-<h1 class="h2 font-weight-normal login-title">
-    Register
-</h1>
+<title>Регистрация</title>
 
-<EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="registerRequest">
-    <DataAnnotationsValidator />
+<MudTextField Label="Почта" @bind-Value="email" Counter="40" MaxLength="40" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))" />
+<MudTextField Label="Пароль" @bind-Value="password" Counter="40" MaxLength="40" Immediate="true" InputType="InputType.Password" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))"/>
+<MudTextField Label="Подтверждение" @bind-Value="confirmpassword" Counter="40" MaxLength="40" Immediate="true" InputType="InputType.Password" Validation="@(new Func<string, IEnumerable<string>>(MaxCharacters))"/>
 
-    <label for="inputUsername" class="sr-only">User Name</label>
-    <InputText id="inputUsername" class="form-control" placeholder="Username" autofocus @bind-Value="@registerRequest.UserName" />
-    <ValidationMessage For="@(() => registerRequest.UserName)" />
+<MudButton OnClick="RegisterAcc">Зарегестрироваться</MudButton>
 
-    <label for="inputPassword" class="sr-only">Password</label>
-    <InputText type="password" id="inputPassword" class="form-control" placeholder="Password" @bind-Value="@registerRequest.Password" />
-    <ValidationMessage For="@(() => registerRequest.Password)" />
 
-    <label for="inputPasswordConfirm" class="sr-only">Password Confirmation</label>
-    <InputText type="password" id="inputPasswordConfirm" class="form-control" placeholder="Password Confirmation" @bind-Value="@registerRequest.PasswordConfirm" />
-    <ValidationMessage For="@(() => registerRequest.PasswordConfirm)" />
 
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Create account</button>
+@code {
+    private string email;
+    private string password;
+    private string confirmpassword;
 
-    <label class="text-danger">@error</label>
-    <NavLink href="login">
-        <h6 class="font-weight-normal text-center">Already have an account? Click here to login</h6>
-    </NavLink>
-</EditForm>
-
-@functions{
-
-    RegisterRequest registerRequest { get; set; } = new RegisterRequest();
-    string error { get; set; }
-
-    async Task OnSubmit()
+    private IEnumerable<string> MaxCharacters(string ch)
     {
-        error = null;
-        try
+        if (!string.IsNullOrEmpty(ch) && 40 < ch?.Length)
+            yield return "Max 40 characters";
+    }
+
+    private void RegisterAcc()
+    {
+        var acc = new Account() { Email = email, Password = password, Role = new[] { db.Role.FirstOrDefault(x=>x.Name == "user") }};
+        if (db.Account.FirstOrDefault(x=>x.Email ==email) ==null)
         {
-            await AuthService.Register(registerRequest);
-            navigationManager.NavigateTo("/");
+            db.Account.Add(acc);
+            db.SaveChanges();
+            Snackbar.Add("Аккаунт создан.", Severity.Success);
+            nav.NavigateTo("/login");
         }
-        catch (Exception ex)
+        else
         {
-            error = ex.Message;
+            Snackbar.Add("Аккаунт уже зарегестрирован.", Severity.Error);
         }
     }
 }

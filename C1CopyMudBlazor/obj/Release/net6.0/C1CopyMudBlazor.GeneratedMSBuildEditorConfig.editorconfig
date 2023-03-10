@@ -32,16 +32,8 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aFxSZWdpc3Rlci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Clients/AddClientDialog.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50c1xBZGRDbGllbnREaWFsb2cucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = 
-
 [D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Clients/ClientEmployees.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50c1xDbGllbnRFbXBsb3llZXMucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Clients/ClientOffices.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50c1xDbGllbnRPZmZpY2VzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Clients/ClientPage.razor]
@@ -52,12 +44,12 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50c1xDbGllbnRzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Clients/RemoveClientDialog.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50c1xSZW1vdmVDbGllbnREaWFsb2cucmF6b3I=
+[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Clients/Dialog/AddClientDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50c1xEaWFsb2dcQWRkQ2xpZW50RGlhbG9nLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Clients/Test.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50c1xUZXN0LnJhem9y
+[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Clients/Dialog/RemoveClientDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50c1xEaWFsb2dcUmVtb3ZlQ2xpZW50RGlhbG9nLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Counter.razor]
@@ -68,20 +60,76 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRW1wbG95ZWVzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/FetchData.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRmV0Y2hEYXRhLnJhem9y
+[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Employee/EmployeesEditAddDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRW1wbG95ZWVcRW1wbG95ZWVzRWRpdEFkZERpYWxvZy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Legals/Legal.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGVnYWxzXExlZ2FsLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Legals/LegalEditAddDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGVnYWxzXExlZ2FsRWRpdEFkZERpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Legals/LegalInfo.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGVnYWxzXExlZ2FsSW5mby5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Offices/AddOfficeDialog.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT2ZmaWNlc1xBZGRPZmZpY2VEaWFsb2cucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Offices/ClientOffices.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT2ZmaWNlc1xDbGllbnRPZmZpY2VzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Offices/Image.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT2ZmaWNlc1xJbWFnZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Offices/OfficeImage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT2ZmaWNlc1xPZmZpY2VJbWFnZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Offices/OfficeInfo.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT2ZmaWNlc1xPZmZpY2VJbmZvLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Offices/Offices.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcT2ZmaWNlc1xPZmZpY2VzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/Teches/ClientTechTable.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVjaGVzXENsaWVudFRlY2hUYWJsZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/WorkPlaces/TechEditAddDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV29ya1BsYWNlc1xUZWNoRWRpdEFkZERpYWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/WorkPlaces/WorkPlaceEditAddDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV29ya1BsYWNlc1xXb3JrUGxhY2VFZGl0QWRkRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/WorkPlaces/WorkPlaceInfo.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV29ya1BsYWNlc1xXb3JrUGxhY2VJbmZvLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/WorkPlaces/WorkPlaceTable.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV29ya1BsYWNlc1xXb3JrUGxhY2VUYWJsZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Pages/WorkPlaces/WorkPlaceTech.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV29ya1BsYWNlc1xXb3JrUGxhY2VUZWNoLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Shared/LoginControl.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExvZ2luQ29udHJvbC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/C\# Projects/SitesSourse/C1CopyMudBlazor/C1CopyMudBlazor/Shared/MainLayout.razor]

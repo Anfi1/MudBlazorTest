@@ -29,11 +29,11 @@ public class WorkerService : IWorkerService
     }
     public List<Worker> GetWorkers()
     {
-        return _dbContext.Workers.Include(b=>b.Office).Include(b=>b.Office.Client).ToList();
+        return _dbContext.Workers.Include(b=>b.Office).ThenInclude(b=>b.Client).ToList();
     }
-    public IEnumerable<Worker> GetWorkersByClient(string name)
+    public IEnumerable<Worker> GetWorkersByClientID(int id)
     {
-        return _dbContext.Workers.Include(b=>b.Office).Include(b=>b.Office.Client).Where(b=>b.Office.Client.Name == name).ToList();
+        return _dbContext.Workers.Where(b=>b.ClientID == id).Include(x=>x.WorkPlace).ThenInclude(x=>x.teches).ToList();
     }
     public void SaveWorker(Worker office)
     {

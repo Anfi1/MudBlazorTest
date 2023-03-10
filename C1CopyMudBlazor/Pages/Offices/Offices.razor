@@ -1,9 +1,12 @@
 @page "/Offices"
 @using C1CopyMudBlazor.Data.Interfaces
-@using C1CopyMudBlazor.Pages.Clients
+@using C1CopyMudBlazor.Pages.Clients.Dialog
 @inject IDialogService DialogService
 @inject IOfficeService officeService
 @inject ISnackbar Snackbar
+@attribute [Authorize(Roles="admin")]
+
+<PageTitle>Офисы</PageTitle>
 
 <MudCard Elevation="25">
     <MudCardHeader>
@@ -90,7 +93,7 @@
         var options = new DialogOptions() { CloseButton = false, MaxWidth = MaxWidth.Small };
         var dialog = DialogService.Show<RemoveClientDialog>("Удалить офис?", parameters, options);
         var result = await dialog.Result;
-        if (!result.Cancelled)
+        if (!result.Canceled)
         {
             officeService.DeleteOffice(id);
             Snackbar.Add("Customer Deleted.", Severity.Success);

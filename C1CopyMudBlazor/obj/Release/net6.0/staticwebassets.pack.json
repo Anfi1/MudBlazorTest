@@ -1,6 +1,42 @@
 {
   "Files": [
     {
+      "Id": "D:\\C# Projects\\SitesSourse\\C1CopyMudBlazor\\C1CopyMudBlazor\\wwwroot\\Legal\\EmbasyLegal\\archive (1).pdf",
+      "PackagePath": "staticwebassets\\Legal\\EmbasyLegal\\archive (1).pdf"
+    },
+    {
+      "Id": "D:\\C# Projects\\SitesSourse\\C1CopyMudBlazor\\C1CopyMudBlazor\\wwwroot\\Legal\\Test.png",
+      "PackagePath": "staticwebassets\\Legal\\Test.png"
+    },
+    {
+      "Id": "D:\\C# Projects\\SitesSourse\\C1CopyMudBlazor\\C1CopyMudBlazor\\wwwroot\\Office\\officename\\C7AadjGTqyc.jpg",
+      "PackagePath": "staticwebassets\\Office\\officename\\C7AadjGTqyc.jpg"
+    },
+    {
+      "Id": "D:\\C# Projects\\SitesSourse\\C1CopyMudBlazor\\C1CopyMudBlazor\\wwwroot\\Office\\КЗ\\ima21122112ge.png",
+      "PackagePath": "staticwebassets\\Office\\КЗ\\ima21122112ge.png"
+    },
+    {
+      "Id": "D:\\C# Projects\\SitesSourse\\C1CopyMudBlazor\\C1CopyMudBlazor\\wwwroot\\Office\\Минск\\C7AadjGTqyc.jpg",
+      "PackagePath": "staticwebassets\\Office\\Минск\\C7AadjGTqyc.jpg"
+    },
+    {
+      "Id": "D:\\C# Projects\\SitesSourse\\C1CopyMudBlazor\\C1CopyMudBlazor\\wwwroot\\Office\\Минск\\HTfL7ApK3Dw.jpg",
+      "PackagePath": "staticwebassets\\Office\\Минск\\HTfL7ApK3Dw.jpg"
+    },
+    {
+      "Id": "D:\\C# Projects\\SitesSourse\\C1CopyMudBlazor\\C1CopyMudBlazor\\wwwroot\\Office\\РБ Клиника\\План меденова 1 этаж.pdf",
+      "PackagePath": "staticwebassets\\Office\\РБ Клиника\\План меденова 1 этаж.pdf"
+    },
+    {
+      "Id": "D:\\C# Projects\\SitesSourse\\C1CopyMudBlazor\\C1CopyMudBlazor\\wwwroot\\Office\\РБ Клиника\\План меденова второе помещение.pdf",
+      "PackagePath": "staticwebassets\\Office\\РБ Клиника\\План меденова второе помещение.pdf"
+    },
+    {
+      "Id": "D:\\C# Projects\\SitesSourse\\C1CopyMudBlazor\\C1CopyMudBlazor\\wwwroot\\Office\\РБ Клиника\\План меденова второй этаж.pdf",
+      "PackagePath": "staticwebassets\\Office\\РБ Клиника\\План меденова второй этаж.pdf"
+    },
+    {
       "Id": "D:\\C# Projects\\SitesSourse\\C1CopyMudBlazor\\C1CopyMudBlazor\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
     },

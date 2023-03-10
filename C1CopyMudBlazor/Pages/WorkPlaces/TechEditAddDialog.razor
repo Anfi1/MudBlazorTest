@@ -1,0 +1,93 @@
+<EditForm Model="@tech" OnValidSubmit="OnSubmit">
+    <DataAnnotationsValidator/>
+    <MudCard Class="demo-form">
+        <MudCardContent>
+            <MudSelect Label="Шаблон" T="string" ValueChanged="LoadTemplate" >
+                <MudSelectItem Value="@("ПК")">ПК</MudSelectItem>
+                <MudSelectItem Value="@("Телефон")">Телефон</MudSelectItem>
+            </MudSelect>
+            <MudTextField Label="Инвентарник"@bind-Value="tech.InventaryID" For="@(() => tech.InventaryID)"/>
+            <MudTextField Label="Тип" @bind-Value="tech.Type" For="@(() => tech.Type)" ReadOnly="@ronly"/>
+            <MudTextField Label="Модель" @bind-Value="tech.Model" For="@(() => tech.Model)"/>
+            <MudTextField Label="IP" Mask="@ipv4Mask" @bind-Value="tech.IPAdress" For="@(() => tech.IPAdress)" InputType="InputType.Text"/>
+            @if (WorkPlaces != null)
+            {
+                <MudSelect Label="Расположение" @bind-Value="workplace" Text="@($"{tech.WorkPlaceID}")">
+                    @foreach (var item in WorkPlaces)
+                    {
+                        <MudSelectItem Value="@item.ID">@item.WorkplaceNumber</MudSelectItem>
+                    }
+                    <MudSelectItem Value="@(-1)">Убрать</MudSelectItem>
+                </MudSelect>
+            }
+            else
+            {
+                
+            }
+            @if (tech.Type == "ПК" || tech.Type == "Телефон")
+            {
+                <MudTextField Label="Логин" @bind-Value="tech.Login"/>
+                <MudTextField Label="Пароль" @bind-Value="tech.Pass"/>
+            }
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" Color="Color.Transparent" OnClick="Cancel">Отмена</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Сохранить</MudButton>
+        </MudCardActions>
+    </MudCard>
+</EditForm>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+    
+    [Parameter]
+    public Tech tech { get; set; }
+
+    [Parameter]
+    public int workplace { get; set; }
+
+    [Parameter]
+    public IEnumerable<WorkPlace> WorkPlaces { get; set; }
+    [Parameter]
+    public IEnumerable<Office> Offices { get; set; }
+
+    public IMask ipv4Mask = RegexMask.IPv4();
+    private bool ronly = false;
+
+    void LoadTemplate(string template)
+    {
+        if (template == "ПК")
+        {
+            tech.Type = template;
+            ronly = true;
+        }
+        else if(template == "Телефон")
+        {
+            tech.Type = template;
+            ronly = true;
+        }
+    }
+    
+    void OnSubmit(EditContext context)
+    {
+        if (workplace != null)
+        {
+            if (workplace == -1)
+            {
+                tech.WorkPlaceID = null;
+            }
+            else
+            {
+                tech.WorkPlaceID = workplace;
+            }
+        }
+        if (context.Validate())
+        {
+            MudDialog.Close(DialogResult.Ok(context));
+        }
+    }
+
+    void Cancel() => MudDialog.Cancel();
+}

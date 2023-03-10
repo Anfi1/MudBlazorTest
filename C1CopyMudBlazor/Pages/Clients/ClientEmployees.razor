@@ -1,0 +1,287 @@
+@using Microsoft.AspNetCore.Components
+@using C1CopyMudBlazor.Pages.Clients.Dialog
+@using C1CopyMudBlazor.Pages.Employee
+@inject IDialogService DialogService
+@inject ILegalEntitiesService legalService
+@inject IWorkerService workerService
+@inject IOfficeService officeService
+@inject IWorkPlaceService workPlaceService
+@inject ITechService techService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+
+<style type="text/css">
+    .mud-table-head .header-centered th {
+        text-align: center;
+        font-size: 1.2em;
+    }
+
+   .mud-table-foot .bold-text .mud-table-cell {
+       font-weight: 500;
+   }
+</style>
+
+
+<MudTable Hover="true" T="Worker" Elevation="25" Dense="true" @ondblclick="@(async () => {try{ await Edit(selectedItem.ID);}catch{} })"
+          Items="getWorkers()" Filter="new Func<Worker, bool>(SearchWorker)" HeaderClass="table-head-bordered"
+          CustomHeader="true" Bordered="true"
+          OnRowClick="(TableRowClickEventArgs<Worker> item) => { try{selectedItem = item.Item;}catch{} }">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Сотрудники</MudText>
+        <MudSpacer/>
+        <MudTextField @bind-Value="searchString" Placeholder="Поиск по таблице..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" 
+                      IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudFab OnClick="AddItem" Size="Size.Small" Class="ml-4 mt-4" StartIcon="@Icons.Material.Filled.Add" Color="Color.Success"/>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTHeadRow Class="header-centered">
+            <MudTh colspan="1"></MudTh>
+            <MudTh colspan="6">Базовая информация</MudTh>
+            <MudTh colspan="2">Anydesk</MudTh>
+            <MudTh colspan="2">Почта</MudTh>
+            <MudTh colspan="5">ПК</MudTh>
+            <MudTh colspan="99">Телефон</MudTh>
+        </MudTHeadRow>
+        <MudTHeadRow >
+            <MudTh>Действия.....</MudTh>
+
+            <MudTh>
+                Должность
+            </MudTh>
+            <MudTh>
+                            <MudTableSortLabel SortBy="new Func<Worker, object>(x => x.FIO)">ФИО</MudTableSortLabel>
+                        </MudTh>
+            <MudTh>
+                <MudTableSortLabel SortBy="new Func<Worker, object>(x => x.OwnPhoneNumber)">Телефон</MudTableSortLabel>
+            </MudTh>
+            <MudTh>
+                <MudTableSortLabel SortBy="new Func<Worker, object>(x => x.Office.OfficeName)">Офис</MudTableSortLabel>
+            </MudTh>
+            <MudTh>№ места</MudTh>
+            <MudTh>Сервер</MudTh>
+
+            <MudTh>AnyDesk</MudTh>
+            <MudTh>Пароль</MudTh>
+
+            <MudTh>Email</MudTh>
+            <MudTh>EmailPass</MudTh>
+
+            <MudTh>UserAD</MudTh>
+            <MudTh>PassAD</MudTh>
+            <MudTh>PCLog</MudTh>
+            <MudTh>PCPass</MudTh>
+            <MudTh>PCIP</MudTh>
+            <MudTh>PhoneLog</MudTh>
+            <MudTh>PhonePass</MudTh>
+            <MudTh>PhoneIP</MudTh>
+            <MudTh>PhoneOutsideNumber</MudTh>
+
+        </MudTHeadRow>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Действия">
+            <MudFab @onclick="@(() => Edit(@context.ID))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small"/>
+            <MudFab @onclick="@(() => Delete(@context.ID))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small"/>
+        </MudTd>
+        <MudTd DataLabel="Фио">@context.Position</MudTd>
+        <MudTd DataLabel="Фио">@context.FIO</MudTd>
+        <MudTd DataLabel="PhoneNumber">
+            <MudLink Href=@($"tel:{context.OwnPhoneNumber}")>@context.OwnPhoneNumber</MudLink>
+        </MudTd>
+        @if (context.OfficeID != null)
+        {
+            <MudTd DataLabel="Офис">
+                <MudLink Href=@($"/Clients/{context.Office.Client.Name}/Offices/{context.Office.OfficeName}")>@context.Office.OfficeName</MudLink>
+            </MudTd>
+        }
+        else
+        {
+            <MudTd DataLabel="Офис">
+                <MudText>Не выбран!</MudText>
+            </MudTd>
+        }
+        @if (context.WorkPlaceID != null)
+        {
+            <MudTd DataLabel="№ места">
+                <MudLink Href=@($"/Clients/{context.Office.Client.Name}/Offices/{context.Office.OfficeName}/Workplace/{context.WorkPlaceID}")>@context.WorkPlace.WorkplaceNumber</MudLink>
+            </MudTd>
+        }
+        else
+        {
+            <MudTd DataLabel="Офис">
+                <MudText>Не выбрано!</MudText>
+            </MudTd>
+        }
+
+        <MudTd DataLabel="Сервер">@context.ServerIP</MudTd>
+
+        <MudTd DataLabel="ID">
+            <MudLink Href=@($"anydesk:{context.AnyDesk}")>@context.AnyDesk</MudLink>
+        </MudTd>
+        <MudTd DataLabel="Пароль">@context.AnyDeskPass</MudTd>
+
+        <MudTd DataLabel="Email">@context.Email</MudTd>
+        <MudTd DataLabel="EmailPass">@context.EmailPass</MudTd>
+
+        <MudTd DataLabel="UserAD">@context.UserAD</MudTd>
+        <MudTd DataLabel="PassAD">@context.PassAD</MudTd>
+
+        <MudTd DataLabel="PhoneLog">@getTechPC(context).Login</MudTd>
+        <MudTd DataLabel="PhoneLog">@getTechPC(context).Pass</MudTd>
+        <MudTd DataLabel="PhoneLog">@getTechPC(context).IPAdress</MudTd>
+        <MudTd DataLabel="PhoneLog">@getTechPhone(context).Login</MudTd>
+        <MudTd DataLabel="PhonePass">@getTechPhone(context).Pass</MudTd>
+        <MudTd DataLabel="PhonePass">@getTechPhone(context).IPAdress</MudTd>
+        <MudTd DataLabel="PhoneOutsideNumber">@context.PhoneOutsideNumber</MudTd>
+
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager/>
+    </PagerContent>
+</MudTable>
+
+@code{
+
+    private string searchString = "";
+
+    [Parameter]
+    public string name { get; set; }
+
+    [Parameter]
+    public int ID { get; set; }
+
+    private bool popovershow;
+    private Worker selectedItem;
+    private Worker worker = new Worker();
+    private IEnumerable<Office> offices = new List<Office>();
+    private IEnumerable<Worker> workers = new List<Worker>();
+    private IEnumerable<WorkPlace> workPlaces = new List<WorkPlace>();
+    private IEnumerable<Tech> teches = new List<Tech>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        workPlaces = workPlaceService.GetWorkPlacesByClientID(ID);
+        teches = techService.GetTechByWorkerID(ID);
+        getWorkers();
+        getOffices();
+    }
+
+    private Tech getTechPC(Worker worker)
+    {
+        var w = worker.WorkPlace?.teches.FirstOrDefault(x => x.Type == "ПК") ?? new Tech();
+        return w;
+    }
+
+    private Tech getTechPhone(Worker worker)
+    {
+        var w = worker.WorkPlace?.teches.FirstOrDefault(x => x.Type == "Телефон") ?? new Tech();
+        return w;
+    }
+
+    private void Save()
+    {
+        worker.ClientID = ID;
+        workerService.SaveWorker(worker);
+        worker = new Worker();
+        Snackbar.Add("Customer Saved.", Severity.Success);
+        getWorkers();
+    }
+
+    private async Task AddItem()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("worker", worker);
+        parameters.Add("offices", offices);
+        parameters.Add("workPlaces", workPlaces);
+
+        var options = new DialogOptions() { CloseButton = false, MaxWidth = MaxWidth.Large };
+        var dialog = DialogService.Show<EmployeesEditAddDialog>("Добавить сотрудника", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            Save();
+        }
+    }
+
+    private async Task Edit(int id)
+    {
+        try
+        {
+            worker = workers.FirstOrDefault(c => c.ID == id);
+            var parameters = new DialogParameters();
+            parameters.Add("worker", worker);
+            parameters.Add("offices", offices);
+            parameters.Add("workPlaces", workPlaces);
+            parameters.Add("office", worker.OfficeID);
+            parameters.Add("workplace", worker.WorkPlaceID);
+
+            var options = new DialogOptions() { CloseButton = false, MaxWidth = MaxWidth.Large };
+            var dialog = DialogService.Show<EmployeesEditAddDialog>("Изменить сотрудника", parameters, options);
+            var result = await dialog.Result;
+            if (!result.Cancelled)
+            {
+                Save();
+            }
+            else
+            {
+                worker = new Worker();
+            }
+        }
+        catch
+        {
+            
+        }
+        
+    }
+
+    private async Task Delete(int id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ClientName", $"{worker.FIO}");
+        parameters.Add("ButtonText", "Удалить");
+        parameters.Add("Color", Color.Error);
+
+        var options = new DialogOptions() { CloseButton = false, MaxWidth = MaxWidth.Small };
+        var dialog = DialogService.Show<RemoveClientDialog>("Удалить Сотрудника?", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            workerService.DeleteWorker(id);
+            Snackbar.Add("Сотрудник удален", Severity.Success);
+            getWorkers();
+        }
+    }
+
+    private IEnumerable<Office> getOffices()
+    {
+        offices = officeService.GetOffices().Where(o => o.ClientID == ID);
+        return offices;
+    }
+
+    private IEnumerable<Worker> getWorkers()
+    {
+        workers = workerService.GetWorkersByClientID(ID);
+        return workers;
+    }
+
+    private bool SearchWorker(Worker worker)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        try
+        {
+            if (worker.FIO.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+                || (worker.AnyDesk).Contains(searchString, StringComparison.OrdinalIgnoreCase)
+                || worker.Office.OfficeName.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+                || worker.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+        catch
+        {
+        }
+
+        return false;
+    }
+
+}

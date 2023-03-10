@@ -1,32 +1,25 @@
-<MudDialog>
-    <DialogContent>
-        <MudTextField @bind-Value="@OfficeName" Label="Название офиса"></MudTextField>
+<MudForm Model="@office" ValidationDelay="0">
+    <MudDialog DefaultFocus="DefaultFocus.LastChild">
+        <DialogContent>
+            <MudTextField @bind-Value="@office.OfficeName" For="@(()=> office.OfficeName)" Required="true" RequiredError="Поле является обязательным!" Label="Название офиса"></MudTextField>
 
-        <MudTextField @bind-Value="@Adress" Label="Адрес офиса"></MudTextField>
-    </DialogContent>
-    <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="@Color" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton>
-    </DialogActions>
-</MudDialog>
+            <MudTextField @bind-Value="@office.Adress" For="@(()=> office.Adress)" Required="true" RequiredError="Поле является обязательным!" Label="Адрес офиса"></MudTextField>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="Cancel">Cancel</MudButton>
+            <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton>
+        </DialogActions>
+    </MudDialog>
+</MudForm>
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    public Office office { get; set; } = new Office();
+    [Parameter]public Office office { get; set; } = new Office();
     
-    [Parameter] public string ContentText { get; set; }
-    
-    public string OfficeName { get; set; }
-    public string Adress { get; set; }
-
     [Parameter] public string ButtonText { get; set; }
-
-    [Parameter] public Color Color { get; set; }
-
+    
     void Submit()
     {
-        office.OfficeName = OfficeName;
-        office.Adress = Adress;
         MudDialog.Close(DialogResult.Ok(office));
     } 
     void Cancel() => MudDialog.Cancel();

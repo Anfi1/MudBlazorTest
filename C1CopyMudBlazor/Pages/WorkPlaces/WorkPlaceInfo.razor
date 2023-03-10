@@ -1,0 +1,55 @@
+@page "/Clients/{name}/Offices/{officename}/Workplace/{workplaceid:int}"
+@inject IWorkPlaceService workPlaceService
+@attribute [Authorize(Roles = "admin")]
+@if (workPlace == null)
+{
+    return;
+}
+<title>Рабочее место @workplaceid</title>
+<MudBreadcrumbs Items="_items"/>
+ <MudGrid>
+        <MudItem xs="4">
+            <MudPaper>
+                <MudCardContent>
+                    <MudTextField @bind-Value="@workPlace.WorkplaceNumber" ReadOnly="true" Label="Номер рабочего места" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+                    
+                </MudCardContent>
+            </MudPaper>
+            <br/>
+        </MudItem>
+        <MudItem xs="8">
+            <WorkPlaceTech workPlace="@workPlace" />
+        </MudItem>
+    </MudGrid>
+    <br/>
+
+
+
+
+@code {
+    [Parameter] public string name { get; set; }
+    [Parameter] public string officename { get; set; }
+    [Parameter] public int workplaceid { get; set; }
+    
+    private WorkPlace workPlace { get; set; }
+    private List<BreadcrumbItem> _items;
+
+    protected override async Task OnInitializedAsync()
+    {
+        workPlace = workPlaceService.GetWorkPlaceById(workplaceid);
+
+        _items = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem("Clients", href: "clients", icon: Icons.Material.Filled.Home),
+            new BreadcrumbItem($"{name}", href: $"Clients/{name}?tabid=1", icon: Icons.Material.Filled.AccessibleForward),
+            new BreadcrumbItem($"{officename}", href: $"Clients/{name}/Offices/{officename}", icon: Icons.Material.Filled.Build),
+            new BreadcrumbItem($"Рабочее место {workPlace.WorkplaceNumber}", href: null, disabled: true, icon: Icons.Material.Filled.Create)
+        };
+    }
+
+    private async Task Save()
+    {
+        workPlaceService.SaveWorkPlace(workPlace);
+    }
+
+}

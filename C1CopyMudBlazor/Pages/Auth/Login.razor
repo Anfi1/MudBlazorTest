@@ -1,55 +1,25 @@
 @page "/login"
-@using Microsoft.AspNetCore.Components
-@using C1CopyMudBlazor.Data.Models
-@using C1CopyMudBlazor.Data.Interfaces
-@layout AuthLayout
-@inject NavigationManager navigationManager
-@inject IAuthService AuthService
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using Microsoft.AspNetCore.Mvc
+@using Microsoft.EntityFrameworkCore
+@inject ISnackbar Snackbar
+@inject ApplicationContext db
+@inject NavigationManager nav
 
-<h1 class="h2 font-weight-normal login-title">
-    Login
-</h1>
+<MudDialog DefaultFocus="DefaultFocus.LastChild"></MudDialog>
+<MudPaper Class="ml-16" >
+    <form action="/login" method='post'>
+        <MudTextField Label="Почта" @bind-Value="email" name="email" Counter="40" MaxLength="40"/>
+        <MudTextField Label="Пароль" @bind-Value="password" name="password" Counter="40" MaxLength="40" Immediate="true" InputType="InputType.Password"/>
 
-<EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="loginRequest">
-    <DataAnnotationsValidator />
+        <MudButton ButtonType="ButtonType.Submit">Вход</MudButton>
+    </form>
+</MudPaper>
 
-    <label for="inputUsername" class="sr-only">User Name</label>
-    <InputText id="inputUsername" class="form-control" @bind-Value="loginRequest.UserName" autofocus placeholder="Username" />
-    <ValidationMessage For="@(() => loginRequest.UserName)" />
-
-    <label for="inputPassword" class="sr-only">Password</label>
-    <InputText type="password" id="inputPassword" class="form-control" placeholder="Password" @bind-Value="loginRequest.Password" />
-    <ValidationMessage For="@(() => loginRequest.Password)" />
-
-    <div class="form-check m-3">
-        <InputCheckbox id="inputRememberMe" class="form-check-input" @bind-Value="@loginRequest.RememberMe" />
-        <label class="form-check-label" for="inputRememberMe">Remember Me</label>
-    </div>
-
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-
-    <label class="text-danger">@error</label>
-
-    <NavLink href="register">
-        <h6 class="font-weight-normal text-center">Create account</h6>
-    </NavLink>
-</EditForm>
 
 @code{
-    LoginRequest loginRequest { get; set; } = new LoginRequest();
-    string error { get; set; }
 
-    async Task OnSubmit()
-    {
-        error = null;
-        try
-        {
-            await AuthService.Login(loginRequest);
-            navigationManager.NavigateTo("/");
-        }
-        catch (Exception ex)
-        {
-            error = ex.Message;
-        }
-    }
+    string email;
+    string password;
 }

@@ -1,0 +1,71 @@
+@page "/Test"
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@inject IJSRuntime JsRuntime;
+@inject IHttpContextAccessor _contextAccessor
+@inject ApplicationContext db
+
+<MudButton OnClick="WriteCookies"> WriteCookies</MudButton>
+
+<button class="btn" @onclick="ReadCookies">
+    Read Cookie
+</button>
+<button class="btn" @onclick="DeleteCookies">
+    Delete Cookie
+</button>
+
+<MudTextField Label="Почта" @bind-Value="email" Counter="40" MaxLength="40" />
+<MudTextField Label="Пароль" @bind-Value="password" Counter="40" MaxLength="40" Immediate="true" InputType="InputType.Password"/>
+<MudTextField Label="Подтверждение" @bind-Value="confirmpassword" Counter="40" MaxLength="40" Immediate="true" InputType="InputType.Password"/>
+
+<MudButton OnClick="RegisterAcc">Зарегестрироваться</MudButton>
+
+<p>The cookie is @myCookieValue</p>
+@code {
+    private string email;
+    private string password;
+    private string confirmpassword;
+    
+    public string myCookieValue { get; set; } = "";
+
+    protected async Task RegisterAcc()
+    {
+        var acc = new Account() { Email = email, Password = password };
+        if (db.Account.FirstOrDefault(x=>x.Email ==email) ==null)
+        {
+            db.Account.Add(acc);
+
+            db.SaveChanges();
+             }
+        else
+        {
+        }
+        var claims = new List<Claim> { new(ClaimsIdentity.DefaultNameClaimType, email), new(ClaimsIdentity.DefaultRoleClaimType, "user")  };
+    // создаем объект ClaimsIdentity
+        ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
+        _contextAccessor.HttpContext.RequestServices.GetRequiredService<IAuthenticationService>().SignInAsync(this._contextAccessor.HttpContext, CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), null);
+
+    }
+    
+    protected async Task WriteCookies()
+    {
+        myCookieValue = _contextAccessor.HttpContext.Request.Cookies.ContainsKey("Test").ToString();
+        
+        //await JsRuntime.InvokeAsync<object>("WriteCookie.WriteCookie", "Test", "Pedigri", DateTime.Now.AddMinutes(1));
+
+    }
+    protected async Task ReadCookies()
+    {
+
+        myCookieValue= await JsRuntime.InvokeAsync<string>("ReadCookie.ReadCookie", "Test");
+
+    }
+    protected async Task DeleteCookies()
+    {
+
+        myCookieValue= await JsRuntime.InvokeAsync<string>("DeleteCookie.DeleteCookie", "Test");
+
+    }
+
+}

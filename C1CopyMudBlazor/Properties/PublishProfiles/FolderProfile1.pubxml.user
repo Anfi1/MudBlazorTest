@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>D:\C# Projects\Sites\WebDevelopmentITB</_PublishTargetUrl>
+    <History>True|2023-02-24T13:03:58.2759544Z;True|2023-02-24T13:15:24.0485549+03:00;True|2023-02-24T12:55:59.0992308+03:00;True|2023-02-22T17:33:35.1140099+03:00;True|2023-02-22T16:59:42.9428496+03:00;True|2023-02-22T16:58:07.3143773+03:00;True|2023-02-22T16:53:15.5847128+03:00;True|2023-02-22T16:42:29.1615740+03:00;True|2023-02-22T15:01:15.9849013+03:00;True|2023-02-22T14:27:42.9183320+03:00;False|2023-02-22T14:27:22.4450014+03:00;False|2023-02-22T14:26:42.8715070+03:00;False|2023-02-22T14:25:19.6141244+03:00;True|2023-02-22T14:07:44.5136271+03:00;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="DefaultConnection">
+      <Value>Server=10.1.0.24%3bUser Id=sa%3bPassword=itboxsa742sa!%3bDatabase=master%3b</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>

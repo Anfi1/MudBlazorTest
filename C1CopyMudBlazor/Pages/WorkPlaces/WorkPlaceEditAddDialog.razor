@@ -1,0 +1,20 @@
+<MudCard Elevation="25">
+    <MudCardContent>
+        <MudTextField @bind-Value="WorkPlace.WorkplaceNumber" Required="true" RequiredError="Поле является обязательным!" Label="Номер рабочего места" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+        <br/>
+        <MudButton Variant="Variant.Filled" Color="Color.Transparent" OnClick="Cancel">Отмена</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Submit">Сохранить</MudButton>
+    </MudCardContent>
+</MudCard>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    
+    [Parameter]
+    public WorkPlace WorkPlace { get; set; }
+    
+    void Submit()
+    {
+        MudDialog.Close(DialogResult.Ok(WorkPlace));
+    } 
+    void Cancel() => MudDialog.Cancel();
+}

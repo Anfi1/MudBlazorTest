@@ -4,5 +4,57 @@
 @{
     Layout = "_Layout";
 }
+<srvr-app>
+    <component type="typeof(App)" render-mode="ServerPrerendered" />
+    
+</srvr-app>
+<script src="_framework/blazor.server.js" autostart="false"></script>
+<script>
+    Blazor.start().then(() => {
+      Blazor.defaultReconnectionHandler._reconnectCallback = function (d) {
+          document.location.reload();
+      }
+    });
+</script>
+<script>
+    window.WriteCookie = {
 
-<component type="typeof(App)" render-mode="ServerPrerendered" />
+        WriteCookie: function (name, value, days) {
+            var expires;
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; max-age=" + date.toGMTString();
+            }
+            else {
+                expires = "";
+            }
+            document.cookie = name + "=" + value + expires + "; path=/";
+        }
+    }
+    
+    window.ReadCookie = {
+        ReadCookie: function (cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+        }
+    }
+    window.DeleteCookie = {
+            DeleteCookie: function (cname) {
+            document.cookie = cname+'=; Max-Age=-99999999;';  
+        }
+    }
+    
+
+</script>

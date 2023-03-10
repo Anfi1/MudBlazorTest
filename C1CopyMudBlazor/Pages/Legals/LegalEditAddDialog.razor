@@ -1,0 +1,22 @@
+<MudCard Elevation="25">
+    <MudCardContent>
+        <MudTextField @bind-Value="Legal.Name" Required="true" RequiredError="Поле является обязательным!" Label="Наименование" Variant="Variant.Text" Margin="Margin.Normal"/>
+        <MudTextField @bind-Value="Legal.Email" Required="true" RequiredError="Поле является обязательным!" Label="Почта" Variant="Variant.Text" Margin="Margin.Normal"/>
+        <br/>
+        <MudButton Variant="Variant.Filled" Color="Color.Transparent" OnClick="Cancel">Отмена</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Submit">Сохранить</MudButton>
+    </MudCardContent>
+</MudCard>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    
+    [Parameter]
+    public LegalEntities Legal { get; set; }
+    
+    void Submit()
+    {
+        
+        MudDialog.Close(DialogResult.Ok(Legal));
+    } 
+    void Cancel() => MudDialog.Cancel();
+}

@@ -1,10 +1,46 @@
 ﻿@page "/"
+@using System.Security.Claims
+
 
 <PageTitle>Index</PageTitle>
 
 <MudText Typo="Typo.h3" GutterBottom="true">Hello, world!</MudText>
 <MudText Class="mb-8">Welcome to your new app, powered by MudBlazor!</MudText>
+<AuthorizeView>
+    <Authorized>
+        @(a=@context.User.Claims.ToList())
+        <p>Hello 
+            @foreach (var claim in a)
+            {
+                @claim.Value
+            }
+            <MudMenu ActivationEvent="@MouseEvent.RightClick">
+                <ChildContent>
+                    <MudMenuItem>Profile</MudMenuItem>
+                    <MudMenuItem>Theme</MudMenuItem>
+                    <MudMenuItem>Usage</MudMenuItem>
+                    <MudMenuItem>Sign Out</MudMenuItem>
+                </ChildContent>
+            </MudMenu>
+        </p>
+    </Authorized>
+    <NotAuthorized>
+        <p>Please log in to access the page. Thank you</p>
+    </NotAuthorized>
+</AuthorizeView>
 <MudAlert Severity="Severity.Normal">You can find documentation and examples on our website here: <MudLink Href="https://mudblazor.com" Typo="Typo.body2" Color="Color.Inherit"><b>www.mudblazor.com</b></MudLink></MudAlert>
+
 @code{
+    List<Claim> a;
     
+    void HandleClick(MouseEventArgs args)
+    {
+        Console.WriteLine("This is a left click");
+    }
+            
+    void HandleRightClick(MouseEventArgs args)
+    {
+        if (args.Button == 2)
+            Console.WriteLine("This is a right click");
+    }
 }

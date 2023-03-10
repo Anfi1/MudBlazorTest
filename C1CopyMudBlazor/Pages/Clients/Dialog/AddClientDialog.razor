@@ -1,0 +1,29 @@
+<MudDialog>
+    <DialogContent>
+        <MudTextField Required="true" RequiredError="Имя Клиента обязательно" @bind-Value="@Name" Label="Имя клиента"></MudTextField>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="@Color" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    public Client client { get; set; } = new Client();
+    
+    [Parameter] public string ContentText { get; set; }
+    
+    public string Name { get; set; }
+
+    [Parameter] public string ButtonText { get; set; }
+
+    [Parameter] public Color Color { get; set; }
+
+    void Submit()
+    {
+        client.Name = Name;
+        MudDialog.Close(DialogResult.Ok(client));
+    } 
+    void Cancel() => MudDialog.Cancel();
+}

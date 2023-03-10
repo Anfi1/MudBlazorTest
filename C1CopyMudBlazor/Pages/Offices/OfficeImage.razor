@@ -1,0 +1,154 @@
+@inject ISnackbar Snackbar
+@inject IWebHostEnvironment Environment
+@inject IDialogService DialogService
+
+@if (images.Count == 0)
+{
+    <MudStack Style="width: 100%">
+        <MudFileUpload T="IReadOnlyList<IBrowserFile>" OnFilesChanged="OnInputFileChanged" Hidden="false" Class="flex-1" InputClass="absolute mud-width-full mud-height-full overflow-hidden z-20" InputStyle="opacity:0"
+                       @ondragenter="@SetDragClass" @ondragleave="@ClearDragClass" @ondragend="@ClearDragClass">
+            <ButtonTemplate>
+                <MudPaper Height="300px" Outlined="true" Class="@DragClass">
+                    <MudText Typo="Typo.h6">Перетащите файл офиса</MudText>
+                    @foreach (var file in images)
+                    {
+                        <MudChip Color="Color.Dark" Text="@file"/>
+                    }
+                </MudPaper>
+            </ButtonTemplate>
+        </MudFileUpload>
+    </MudStack>
+}
+else
+{
+    <style>
+    .myImage {
+    max-width: 100vw; 
+    height: auto;
+    max-height:100vh;
+    width:auto;
+    }
+</style>
+    <MudCarousel  @ref="_carousel" ItemsSource="@images" Style="position: relative; height: 500px;" @bind-SelectedIndex="selectedIndex" ShowArrows="@_arrows" ShowBullets="@_bullets" EnableSwipeGesture="@_enableSwipeGesture" AutoCycle="@_autocycle">
+        <ItemTemplate>
+            <div class="d-flex" style="height: 100%; width: 100%;">
+                
+                <embed src="@($"Office/{officename}/{@context}")" style="width: 100%;height: 100%"/>
+            </div>
+        </ItemTemplate>
+    </MudCarousel>
+    <br/>
+    <MudGrid Class="">
+        <MudFileUpload T="IReadOnlyList<IBrowserFile>" OnFilesChanged="OnInputFileChanged" Hidden="false" Class="flex-1" InputClass="absolute mud-width-full mud-height-full overflow-hidden z-20" InputStyle="opacity:0"
+                       @ondragenter="@SetDragClass" @ondragleave="@ClearDragClass" @ondragend="@ClearDragClass">
+            <ButtonTemplate>
+                <MudButton HtmlTag="label"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                           for="@context">
+                    Загрузить файл
+                </MudButton>
+            </ButtonTemplate>
+        </MudFileUpload>
+        <MudButton Class="ma-2" Variant="Variant.Filled" Color="Color.Error" OnClick="@(async () => await DeleteAsync(_carousel.SelectedIndex))">Delete</MudButton>
+    </MudGrid>
+    <MudSelect @bind-Value="selectedIndex" Label="@($"Selected Item (index: {selectedIndex})")">
+        @{
+            int index = 0;
+            foreach (var item in images)
+            {
+                <MudSelectItem Value="@index">@item</MudSelectItem>
+
+                index++;
+            }
+        }
+    </MudSelect>
+@code {
+    private MudCarousel<string> _carousel;
+    private bool _arrows = true;
+    private bool _bullets = false;
+    private bool _enableSwipeGesture = true;
+    private bool _autocycle = false;
+    private int selectedIndex = 0;
+    [Parameter]
+    public string officename { get; set; }
+
+    private string path { get; set; }
+
+    private static string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full z-10";
+    private string DragClass = DefaultDragClass;
+    private List<string> images = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        path = $"wwwroot\\Office\\{officename}";
+        var d = new DirectoryInfo(path);
+        if (!d.Exists)
+        {
+            d.Create();
+        }
+        else
+        {
+            foreach (var file in d.GetFiles())
+            {
+                images.Add(file.Name);
+            }
+            if (images.Count < 2)
+            {
+                _arrows = false;
+            }
+        }
+    }
+
+    private void Red()
+    {
+        var options = new DialogOptions { };
+        var parameters = new DialogParameters();
+        parameters.Add("image", images[selectedIndex]);
+        parameters.Add("officename", officename);
+        DialogService.Show<Image>("",parameters, options);
+    }
+
+    private async Task DeleteAsync(int index)
+    {
+        File.Delete($"wwwroot/Office/{officename}/{images[index]}");
+        images.RemoveAt(index);
+        await Task.Delay(1);
+        if (images.Any())
+        {
+            _carousel.MoveTo(System.Math.Max(System.Math.Min(index, images.Count - 1), 0));
+        }
+    }
+    private async Task OnInputFileChanged(InputFileChangeEventArgs e)
+    {
+        ClearDragClass();
+        var files = e.GetMultipleFiles();
+        foreach (var file in files)
+        {
+            
+            var path = Path.Combine(Environment.ContentRootPath, this.path, file.Name);
+
+            await using FileStream fs = new(path, FileMode.Create);
+            await file.OpenReadStream(31000000).CopyToAsync(fs);
+            images.Add(file.Name);
+        }
+
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopRight;
+        Snackbar.Add("Файлы загружены", Severity.Success);
+        await Task.Delay(100);
+        if (images.Count >= 2)
+        {
+            _arrows = true;
+        }
+    }
+    private void ClearDragClass()
+    {
+        DragClass = DefaultDragClass;
+    }
+    private void SetDragClass()
+    {
+        DragClass = $"{DefaultDragClass} mud-border-primary";
+    }
+
+}}

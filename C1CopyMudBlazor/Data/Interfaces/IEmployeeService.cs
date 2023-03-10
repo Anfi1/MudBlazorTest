@@ -6,7 +6,7 @@ namespace C1CopyMudBlazor.Data.Interfaces;
 public interface IWorkerService
 {
     List<Worker> GetWorkers();
-    IEnumerable<Worker> GetWorkersByClient(string client);
+    IEnumerable<Worker> GetWorkersByClientID(int client);
     Worker GetWorkerById(int id);
     void SaveWorker(Worker customer);
     void DeleteWorker(int id);

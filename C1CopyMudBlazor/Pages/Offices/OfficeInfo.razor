@@ -1,0 +1,92 @@
+@page "/Clients/{name}/Offices/{officename}"
+@page "/Offices/{officename}"
+@using C1CopyMudBlazor.Pages.WorkPlaces
+@inject IOfficeService officeService;
+@inject IWorkPlaceService workPlaceService;
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@attribute [Authorize(Roles=$"admin")]
+
+@if (office == null)
+{
+    return;
+}
+<title>@officename</title>
+<MudBreadcrumbs Items="_items"/>
+<MudGrid>
+    <MudItem xs="5">
+        <MudPaper Elevation="2">
+            <MudCardContent>
+                <MudTextField @bind-Value="@office.OfficeName" Label="Название" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+                <MudTextField @bind-Value="@office.City" Label="Город" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+                <MudTextField @bind-Value="@office.Adress" Label="Адрес" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+                <MudTextField @bind-Value="@office.Floor" Label="Этаж" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+                <MudTextField @bind-Value="@office.Cabinet" Label="Кабинет" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+            </MudCardContent>
+        </MudPaper>
+        <br/>
+        <OfficeImage officename="@officename"/>
+    </MudItem>
+    <MudItem xs="7">
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+            <MudTabPanel Text="Рабочие Места">
+                <WorkPlaceTable name="@name" officename="@officename" OfficeID="@office.ID" NavigationManager="NavigationManager"/>
+            </MudTabPanel>
+            <MudTabPanel Text="Техника">
+                <WorkPlaceTech office="@office" workPlaces="@workPlaces"/>
+            </MudTabPanel>
+        </MudTabs>
+    </MudItem>
+</MudGrid>
+<br/>
+<MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Save" Href="javascript:history.back();">Сохранить изменения</MudButton>
+
+@code {
+
+    [Parameter]
+    public string officename { get; set; }
+
+    [Parameter]
+    public string name { get; set; }
+    
+    
+    public string path { get; set; }
+    private List<BreadcrumbItem> _items;
+    private Office office;
+    private IEnumerable<WorkPlace> workPlaces = new List<WorkPlace>();
+
+    protected override void OnInitialized()
+    {
+        if (name == null)
+        {
+            office = officeService.GetOfficeByName(officename);
+        }
+        else
+        {
+            office = officeService.GetOfficeByClientName(name,officename);
+        }
+        
+        workPlaces = workPlaceService.GetWorkPlacesByOfficeID(office.ID);
+        path = $"wwwroot\\Office\\{office.OfficeName}";
+        _items = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem("Clients", href: "clients", icon: Icons.Material.Filled.Home),
+            new BreadcrumbItem($"{name}", href: $"Clients/{name}?tabid=1", icon: Icons.Material.Filled.AccessibleForward),
+            new BreadcrumbItem($"{officename}", href: null, disabled: true, icon: Icons.Material.Filled.Create)
+        };
+    }
+
+    private void Save()
+    {
+        try
+        {
+            officeService.SaveOffice(office);
+            Snackbar.Add("Данные сохранены", Severity.Success);
+        }
+        catch
+        {
+            Snackbar.Add("Ошибка при сохранении", Severity.Error);
+        }
+    }
+
+}

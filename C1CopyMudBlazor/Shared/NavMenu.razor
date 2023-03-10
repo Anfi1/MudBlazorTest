@@ -1,9 +1,53 @@
-﻿<MudNavMenu>
+﻿@using System.Security.Claims
+@inject ApplicationContext db
+@inject NavigationManager nav
+
+<MudNavMenu>
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
     <MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Counter</MudNavLink>
-    <MudNavLink Href="fetchdata" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Fetch data</MudNavLink>
-    <MudNavLink Href="client" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled._1k">Clients</MudNavLink>
-    <MudNavLink Href="Test" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Mood">ClientsTest</MudNavLink>
-    <MudNavLink Href="Employees" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Air">Employees</MudNavLink>
-    <MudNavLink Href="Offices" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.LocalPostOffice">Offices</MudNavLink>
+    <AuthorizeView Roles="admin">
+        
+        <MudList Clickable="true">
+            <MudListItem Icon="@Icons.Material.Filled.Mood" Dense="true" Text="Клиенты" InitiallyExpanded="true">
+                <NestedList>
+                    <MudNavLink Href="clients" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Air">Все клиенты</MudNavLink>
+                    @if (context.User.IsInRole("itbox"))
+                    {
+                        @foreach (var item in clients)
+                        {
+                            <MudNavLink Href="@($"clients/{item}")" Match="NavLinkMatch.All">@item.Name</MudNavLink>
+                        }
+                    }
+                    else
+                    {
+                        var roles = context.User.Claims.Where(x => x.Type == ClaimsIdentity.DefaultRoleClaimType);
+                        roles = roles.Where(u=>u.Value != "user" && u.Value !="admin"  );
+                        @foreach (var a in roles)
+                        {
+                            <MudNavLink Href="@($"clients/{a.Value}")" Match="NavLinkMatch.All">@a.Value</MudNavLink>
+                        }
+                    }
+                    
+                </NestedList>
+            </MudListItem>
+        </MudList>
+
+        @if (context.User.IsInRole("itbox"))
+        {
+            <MudNavLink Href="Employees" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List" Disabled="true">Сотрудники</MudNavLink>
+            <MudNavLink Href="Offices" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.LocalPostOffice">Офисы</MudNavLink>
+            <MudNavLink Href="Legal" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Air">Юр. лица</MudNavLink>
+        }
+    </AuthorizeView>
 </MudNavMenu>
+
+@code{
+
+    private IEnumerable<Client> clients;
+
+    protected override void OnInitialized()
+    {
+        clients = db.Clients.ToList();
+    }
+
+}

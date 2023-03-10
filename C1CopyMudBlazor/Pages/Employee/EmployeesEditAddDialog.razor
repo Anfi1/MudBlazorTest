@@ -1,0 +1,92 @@
+<MudDialog DefaultFocus="DefaultFocus.LastChild"/>
+<EditForm Model="@worker" OnValidSubmit="OnSubmit">
+    <DataAnnotationsValidator/>
+    <MudCard Class="demo-form">
+        <MudCardContent>
+            <MudGrid>
+                <MudItem xs="6">
+                    <MudTextField Label="ФИО"@bind-Value="worker.FIO" For="@(() => worker.FIO)"/>
+                    <MudTextField Label="Личный номер" @bind-Value="@worker.OwnPhoneNumber"/>
+                    <MudTextField Label="Должность" @bind-Value="@worker.Position"/>
+
+                    <MudSelect Label="Расположение" @bind-Value="office" For="() => office">
+                        @foreach (var item in offices)
+                        {
+                            <MudSelectItem Value="@item.ID">@item.OfficeName</MudSelectItem>
+                        }
+                        <MudSelectItem Value="@(-1)">Убрать</MudSelectItem>
+                    </MudSelect>
+
+                    <MudSelect Label="Рабочее место" @bind-Value="workplace" For="() => workplace">
+                        @foreach (var workplace in workPlaces.Where(x => x.OfficeID == office).Except(workPlaces.Where(w => w.WorkplaceNumber == "Офис" || w.WorkplaceNumber == "Склад")))
+                        {
+                            <MudSelectItem Value="@workplace.ID">@workplace.WorkplaceNumber</MudSelectItem>
+                        }
+                        <MudSelectItem Value="@(-1)">Убрать</MudSelectItem>
+                    </MudSelect>
+                    <MudTextField Label="Энидеск" Mask="@(new PatternMask("000000000"))" @bind-Value="worker.AnyDesk" For="@(() => worker.AnyDesk)"/>
+                    <MudTextField Label="Пароль от энидеска" @bind-Value="worker.AnyDeskPass"/>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField Label="Сервер" @bind-Value="@worker.ServerIP"/>
+                    <MudTextField Label="Почта" @bind-Value="@worker.Email"/>
+                    <MudTextField Label="Пароль от почты" @bind-Value="@worker.EmailPass"/>
+                    <MudTextField Label="Учетка AD" @bind-Value="worker.UserAD"/>
+                    <MudTextField Label="Пароль AD" @bind-Value="worker.PassAD"/>
+                    <MudTextField Label="Внешний номер телефонии" @bind-Value="worker.PhoneOutsideNumber"/>
+                </MudItem>
+            </MudGrid>
+
+
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" Color="Color.Transparent" OnClick="Cancel">Отмена</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Сохранить</MudButton>
+        </MudCardActions>
+    </MudCard>
+</EditForm>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public Worker worker { get; set; }
+
+    [Parameter]
+    public IEnumerable<Office> offices { get; set; }
+
+    [Parameter]
+    public IEnumerable<WorkPlace> workPlaces { get; set; }
+
+    [Parameter]
+    public int office { get; set; }
+
+    [Parameter]
+    public int workplace { get; set; }
+
+    void OnSubmit()
+    {
+        if (workplace == -1 || workplace == 0)
+        {
+            worker.WorkPlaceID = null;
+        }
+        else
+        {
+            worker.WorkPlaceID = workplace;
+        }
+        if (office == -1 || office == 0)
+        {
+            worker.OfficeID = null;
+        }
+        else
+        {
+            worker.OfficeID = office;
+        }
+
+        MudDialog.Close(DialogResult.Ok(worker));
+    }
+
+    void Cancel() => MudDialog.Cancel();
+}

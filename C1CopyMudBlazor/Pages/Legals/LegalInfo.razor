@@ -1,0 +1,181 @@
+@page "/Legal/{name}"
+@page "/Clients/{clientname}/Legal/{name}"
+@using Microsoft.AspNetCore.Hosting
+@inject ISnackbar Snacbar
+@inject ILegalEntitiesService legalService
+@inject IWorkerService WorkerService
+@inject IWebHostEnvironment Environment
+@inject NavigationManager nav;
+@attribute [Authorize(Roles="admin")]
+
+<title>@name</title>
+<MudBreadcrumbs Items="_items"/>
+<h3>@name</h3>
+
+<MudCardContent>
+    <MudTextField @bind-Value="@legalEntitie.Name" Label="Юр. лицо" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+    <MudSelect @bind-Value="BuhID" Label="Бухгалтер" Variant="Variant.Text" Margin="Margin.Normal">
+        @foreach (var item in workers)
+        {
+            <MudSelectItem Value="@item.ID">@item.FIO</MudSelectItem>
+        }
+    </MudSelect>
+    <MudItem>@workers.FirstOrDefault(x => x.ID == legalEntitie.BuhID)?.OwnPhoneNumber</MudItem>
+    <MudSelect @bind-Value="DirID" Label="Директор" Variant="Variant.Text" Margin="Margin.Normal">
+        @foreach (var item in workers)
+        {
+            <MudSelectItem Value="@item.ID">@item.FIO</MudSelectItem>
+        }
+    </MudSelect>
+    <MudItem>@workers.FirstOrDefault(x => x.ID == legalEntitie.DirID)?.OwnPhoneNumber</MudItem>
+    <MudTextField @bind-Value="@legalEntitie.Email" Label="Почта для выставления счетов" Variant="Variant.Text" Margin="Margin.Normal"/>
+    <MudTextField @bind-Value="@legalEntitie.UNP" Label="УНП/ИНН" Variant="Variant.Text" Margin="Margin.Normal"/>
+    <br/>
+    <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Save" Href="javascript:history.back();">Сохранить изменения</MudButton>
+    <MudFileUpload T="IBrowserFile" FilesChanged="LoadFiles">
+        <ButtonTemplate>
+            <MudButton HtmlTag="label"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                       for="@context">
+                Загрузить файл
+            </MudButton>
+        </ButtonTemplate>
+    </MudFileUpload>
+    @if (files != null)
+    {
+        <MudText Typo="@Typo.h6">@files.Count() File@(files.Count() == 1 ? "" : "s"):</MudText>
+        <MudList @bind-SelectedItem="selectedItem">
+            @foreach (var file in files)
+            {
+                <MudListItem T="FileInfo" Value="file">
+                    <ButtonTemplate>
+                        <MudFab HtmlTag="label"
+                                Icon="@Icons.Material.Filled.AttachFile"
+                                Href="@($"api/File/Download/{name}/{file.Name}")"
+                                Target="__Blazor"></MudFab>
+                    </ButtonTemplate>
+                    <ButtonTemplate>
+                            <MudFab HtmlTag="label"
+                                    Icon="@Icons.Material.Filled.Delete"
+                                    Color="Color.Error"
+                                    OnClick="() => DeleteFile(file.Name)"
+                                    Target="__Blazor"></MudFab>
+                        </ButtonTemplate>
+                    @file.Name <code>@file.Length bytes</code>
+                </MudListItem>
+            }
+            <MudListItem>@selectedItem</MudListItem>
+        </MudList>
+    }
+    <br/>
+    
+</MudCardContent>
+
+@code {
+
+    [Parameter]
+    public string name { get; set; }
+    
+    [Parameter]
+    public string clientname { get; set; }
+
+    private IEnumerable<Worker> workers;
+    private string path;
+
+    private int BuhID=0;
+    private int DirID=0;
+
+    FileInfo[] files = new FileInfo[] { };
+    private MudListItem selectedItem { get; set; }
+
+    private LegalEntities legalEntitie;
+
+    private List<BreadcrumbItem> _items;
+    protected override async Task OnInitializedAsync()
+    {
+        if (clientname == null)
+        {
+            _items = new List<BreadcrumbItem>
+            {
+                new BreadcrumbItem("Legal", href: "Legal", icon: Icons.Material.Filled.Home),
+                new BreadcrumbItem($"{name}", href: null, disabled: true, icon: Icons.Material.Filled.Create)
+            };
+        }
+        else
+        {
+            _items = new List<BreadcrumbItem>
+            {
+                new BreadcrumbItem("Clients", href: "Clients", icon: Icons.Material.Filled.Home),
+                new BreadcrumbItem($"{clientname}", href: $"Clients/{clientname}?tabid=0", icon: Icons.Material.Filled.Receipt),
+                new BreadcrumbItem($"{name}", href: null, disabled: true, icon: Icons.Material.Filled.Create)
+            };
+        }
+        
+        legalEntitie = legalService.GetLegalEntitiesByName(name);
+        try
+        {
+            BuhID = (int)legalEntitie.BuhID;
+            DirID = (int)legalEntitie.DirID;
+        }
+        catch
+        {
+        }
+
+        workers = WorkerService.GetWorkersByClientID(legalEntitie.ClientID);
+        path = $"wwwroot\\Legal\\{legalEntitie.Name}";
+        var d = new DirectoryInfo(path);
+        if (!d.Exists)
+        {
+            d.Create();
+        }
+        else
+        {
+            files = d.GetFiles();
+        }
+    }
+
+    private async Task LoadFiles(IBrowserFile file)
+    {
+    //foreach 
+
+        var path = Path.Combine(Environment.ContentRootPath, this.path, file.Name);
+
+        await using FileStream fs = new(path, FileMode.Create);
+        await file.OpenReadStream(31000000).CopyToAsync(fs);
+        
+        var d = new DirectoryInfo(this.path);
+        files = d.GetFiles();
+    }
+
+    private async Task DeleteFile(string fileName)
+    {
+        var path = Path.Combine(Environment.ContentRootPath, this.path, fileName);
+        File.Delete(path);
+        files = new DirectoryInfo(this.path).GetFiles();
+    }
+
+    private void DownloadFile(string fileName)
+    {
+        nav.NavigateTo($"api/File/Download/{name}/{fileName}");
+    }
+    
+
+    private void Save()
+    {
+        try
+        {
+            legalEntitie.BuhID = BuhID;
+            legalEntitie.DirID = DirID;
+            legalService.SaveLegalEntities(legalEntitie);
+            Snacbar.Add("Данные сохранены", Severity.Success);
+            
+        }
+        catch
+        {
+            Snacbar.Add("Ошибка при сохранении", Severity.Error);
+        }
+    }
+
+}
